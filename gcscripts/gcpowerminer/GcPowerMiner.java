@@ -13,8 +13,8 @@ import org.powerbot.core.event.listeners.MessageListener;
 import org.powerbot.core.script.ActiveScript;
 import org.powerbot.core.script.job.Job;
 import org.powerbot.core.script.job.state.Branch;
-import org.powerbot.core.script.job.state.Tree;
 import org.powerbot.core.script.job.state.Node;
+import org.powerbot.core.script.job.state.Tree;
 import org.powerbot.game.api.Manifest;
 import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.util.Random;
@@ -33,9 +33,9 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 	@Override
 	public void onStart() {
 		System.out.println("Starting script...");
-		//cooker = new Cooker(new Node[] { new CookBacon(), new EatBacon() }); DOESN'T FUCKING WORK!
-		//provide(new CookBacon(), new EatBacon());
-		new Cooker(new Node[] { new CookBacon(), new EatBacon() });
+		// cooker = new Cooker(new Node[] { new CookBacon(), new EatBacon() });
+		// DOESN'T FUCKING WORK!
+		provide(new CookBacon(), new EatBacon());
 	}
 
 	public synchronized final void provide(final Node... jobs) {
