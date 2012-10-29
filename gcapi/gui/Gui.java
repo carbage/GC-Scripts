@@ -4,22 +4,17 @@ import gcapi.utils.Logger;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.concurrent.TimeUnit;
 
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
 import org.powerbot.core.script.ActiveScript;
@@ -65,12 +60,12 @@ public class Gui extends JFrame {
 			ActiveScript parent) {
 
 		this.logger = logger;
+		logger.log("Initialised GUI.");
 
 		this.parent = parent;
 
 		startTime = System.currentTimeMillis();
 
-		logger.log("Initialised GUI.");
 
 		this.runTime = new Timer(0);
 		
