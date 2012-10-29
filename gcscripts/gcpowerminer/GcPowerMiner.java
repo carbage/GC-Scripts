@@ -1,5 +1,6 @@
 package gcscripts.gcpowerminer;
 
+import gcapi.gui.Gui;
 import gcapi.utils.Logger;
 import gcscripts.gcpowerminer.nodes.CookBacon;
 import gcscripts.gcpowerminer.nodes.EatBacon;
@@ -29,11 +30,24 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 			.synchronizedList(new ArrayList<Node>());
 	private Tree fryingPan = null;
 
+	private int oresMined;
+
+	private Gui gui;
+	
+	private Object[][] data = { { "Ores mined:", getOresMined() },
+			{ "Exp gained:", getOresMined() * 35 }
+	};
+
 	@Override
 	public void onStart() {
 		logger = new Logger(this);
 		logger.log("Started script.");
+		gui = new Gui("GC Power Miner", logger, data);
 		provide(new CookBacon(), new EatBacon());
+	}
+
+	private int getOresMined() {
+		return oresMined;
 	}
 
 	public synchronized final void provide(final Node... jobs) {
@@ -63,6 +77,8 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 
 	@Override
 	public int loop() {
+		if (data != null && gui != null) gui.updateRows(data);
+		oresMined++;
 		if (problemFound) {
 			logger.close();
 			Game.logout(true);
@@ -83,9 +99,10 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 
 	@Override
 	public void messageReceived(MessageEvent msg) {
-		if (msg.getId() == 3) {
+		if (msg.getId() == 109) {
 			if (msg.getMessage().contains("mine some")) {
 				logger.log("Ore successfully mined.");
+				oresMined++;
 			}
 			if (msg.getMessage().contains("a pickaxe")) {
 				logger.log("Player does not have a pickaxe, stopping.");
@@ -94,6 +111,6 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 				logger.log("Player's mining level is too low, stopping.");
 				problemFound = true;
 			}
-	}
+		}
 	}
 }
