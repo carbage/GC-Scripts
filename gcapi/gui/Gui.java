@@ -58,7 +58,7 @@ public class Gui extends JFrame {
 
 	private Logger logger;
 
-	public static ActiveScript superclass;
+	public static ActiveScript parent;
 
 	@SuppressWarnings("serial")
 	public Gui(String scriptName, Logger logger, Object[][] data,
@@ -66,7 +66,7 @@ public class Gui extends JFrame {
 
 		this.logger = logger;
 
-		this.superclass = parent;
+		this.parent = parent;
 
 		startTime = System.currentTimeMillis();
 
@@ -167,7 +167,7 @@ public class Gui extends JFrame {
 
 class WindowEventHandler extends WindowAdapter {
 	public void windowClosing(WindowEvent evt) {
-		if (Gui.superclass != null)
-			Gui.superclass.shutdown();
+		if (Gui.parent != null)
+			Gui.parent.shutdown();
 	}
 }
