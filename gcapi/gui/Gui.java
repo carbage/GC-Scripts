@@ -55,7 +55,7 @@ public class Gui extends JFrame {
 
 	@SuppressWarnings("serial")
 	public Gui(String scriptName, Logger logger, Object[][] data) {
-		
+
 		this.logger = logger;
 
 		startTime = System.currentTimeMillis();
@@ -123,27 +123,21 @@ public class Gui extends JFrame {
 	}
 
 	public void updateRows(final Object[][] data) {
-		//if(logger != null) logger.log("Updating table data");
+		// if(logger != null) logger.log("Updating table data");
 		tableData = data;	// tableData is the field which was used in the
-							// table's initial constructio
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {				
-				model = new DefaultTableModel(data, columns);
-				model.setRowCount(0);
-				for (int i = 0; i < data.length; i++) {
-					model.addRow(data[i]);
-				}
-				model.fireTableRowsUpdated(0, model.getRowCount());
-				table.setModel(model);
-				model.fireTableRowsUpdated(0, model.getRowCount());
-			}
-		});
-
+							// table's initial construction
+		model = new DefaultTableModel(data, columns);
+		model.setRowCount(0);
+		for (int i = 0; i < data.length; i++) {
+			model.addRow(data[i]);
+		}
+		model.fireTableRowsUpdated(0, model.getRowCount());
+		table.setModel(model);
 	}
-	
+
 	public Object[][] getTableData() {
 		return tableData;
-			
+
 	}
 
 	String getTimeRunning() {

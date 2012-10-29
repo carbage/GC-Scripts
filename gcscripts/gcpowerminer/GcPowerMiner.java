@@ -33,17 +33,20 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 	private int oresMined;
 
 	private Gui gui;
-	
+
 	private Object[][] data = { { "Ores mined:", getOresMined() },
-			{ "Exp gained:", getOresMined() * 35 }
-	};
+			{ "Exp gained:", getOresMined() * 35 } };
 
 	@Override
 	public void onStart() {
 		logger = new Logger(this);
 		logger.log("Started script.");
-		gui = new Gui("GC Power Miner", logger, data);
+		gui = new Gui("GC Power Miner", logger, getData());
 		provide(new CookBacon(), new EatBacon());
+	}
+
+	private Object[][] getData() {
+		return data;
 	}
 
 	private int getOresMined() {
@@ -77,8 +80,9 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 
 	@Override
 	public int loop() {
-		if (data != null && gui != null) gui.updateRows(data);
 		oresMined++;
+		if (getData() != null && gui != null)
+			gui.updateRows(getData());
 		if (problemFound) {
 			logger.close();
 			Game.logout(true);
