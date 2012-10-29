@@ -32,21 +32,19 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 
 	private int oresMined;
 
-	private Gui gui;
-
-	private Object[][] data = { { "Ores mined:", getOresMined() },
-			{ "Exp gained:", getOresMined() * 35 } };
+	private static Gui gui;
 
 	@Override
 	public void onStart() {
 		logger = new Logger(this);
 		logger.log("Started script.");
-		gui = new Gui("GC Power Miner", logger, getData());
+		gui = new Gui("GC Power Miner", logger, getData(), this);
 		provide(new CookBacon(), new EatBacon());
 	}
 
 	private Object[][] getData() {
-		return data;
+		return new Object[][] { { "Ores mined:", getOresMined() },
+				{ "Exp gained:", getOresMined() * 35 } };
 	}
 
 	private int getOresMined() {
@@ -80,12 +78,12 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 
 	@Override
 	public int loop() {
-		oresMined++;
-		if (getData() != null && gui != null)
-			gui.updateRows(getData());
+		if (gui != null && !gui.isVisible())
+			gui.setVisible(true);
 		if (problemFound) {
 			logger.close();
 			Game.logout(true);
+			this.stop();
 			return -1;
 		}
 
@@ -107,6 +105,8 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 			if (msg.getMessage().contains("mine some")) {
 				logger.log("Ore successfully mined.");
 				oresMined++;
+				if (getData() != null && gui != null)
+					gui.updateRows(getData());
 			}
 			if (msg.getMessage().contains("a pickaxe")) {
 				logger.log("Player does not have a pickaxe, stopping.");
@@ -116,5 +116,11 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 				problemFound = true;
 			}
 		}
+	}
+	
+	@Override
+	public void onStop() {
+		logger.log("Script stopped.");
+		gui.dispose();
 	}
 }

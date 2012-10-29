@@ -18,9 +18,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
+import org.powerbot.core.script.ActiveScript;
 import org.powerbot.game.api.util.Timer;
 
 public class Gui extends JFrame {
@@ -33,10 +35,13 @@ public class Gui extends JFrame {
 	private JPanel contentPane = new JPanel();
 
 	private JLabel scriptLabel = new JLabel();
-	private JLabel scriptNameLabel = new JLabel();
+	private JLabel scriptValueLabel = new JLabel();
 
 	private JLabel runtimeLabel = new JLabel();
-	private JLabel runtimeTimeLabel = new JLabel();
+	private JLabel runtimeValueLabel = new JLabel();
+
+	private JLabel statusLabel = new JLabel();
+	private JLabel statusValueLabel = new JLabel();
 
 	private JTabbedPane tabArea = new JTabbedPane();
 	private JScrollPane tableScrollPane;
@@ -53,36 +58,42 @@ public class Gui extends JFrame {
 
 	private Logger logger;
 
+	public static ActiveScript superclass;
+
 	@SuppressWarnings("serial")
-	public Gui(String scriptName, Logger logger, Object[][] data) {
+	public Gui(String scriptName, Logger logger, Object[][] data,
+			ActiveScript parent) {
 
 		this.logger = logger;
+
+		this.superclass = parent;
 
 		startTime = System.currentTimeMillis();
 
 		logger.log("Initialised GUI.");
 
-		runTime = new Timer(0);
+		this.runTime = new Timer(0);
 
 		setTitle("GC GUI");
 		setPreferredSize(new Dimension(350, 300));
 		setResizable(false);
 		setLayout(new FlowLayout(FlowLayout.LEADING, PADDING, PADDING));
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		scriptLabel.setText("Script Name:");
-		scriptLabel.setLabelFor(scriptNameLabel);
+		scriptLabel.setLabelFor(scriptValueLabel);
 		scriptLabel.setPreferredSize(new Dimension(120, 20));
-		scriptNameLabel.setText(scriptName);
-		scriptNameLabel.setPreferredSize(new Dimension(120, 20));
+		scriptValueLabel.setText(scriptName);
+		scriptValueLabel.setPreferredSize(new Dimension(120, 20));
 
 		runtimeLabel.setText("Run time:");
-		runtimeLabel.setLabelFor(runtimeTimeLabel);
+		runtimeLabel.setLabelFor(runtimeValueLabel);
 		runtimeLabel.setPreferredSize(new Dimension(120, 20));
-		runtimeTimeLabel.setPreferredSize(new Dimension(120, 20));
+		runtimeValueLabel.setPreferredSize(new Dimension(120, 20));
 		new Thread() {
 			public void run() {
-				while (true) {
-					runtimeTimeLabel.setText(getTimeRunning());
+				while (true) { // Constantly updates run time for label
+					runtimeValueLabel.setText(getTimeRunning());
 					try {
 						Thread.sleep(1);
 					} catch (InterruptedException e) {
@@ -92,6 +103,12 @@ public class Gui extends JFrame {
 
 			}
 		}.start();
+
+		scriptLabel.setText("Script Name:");
+		scriptLabel.setLabelFor(scriptValueLabel);
+		scriptLabel.setPreferredSize(new Dimension(120, 20));
+		scriptValueLabel.setText(scriptName);
+		scriptValueLabel.setPreferredSize(new Dimension(120, 20));
 
 		model = new DefaultTableModel(data, columns);
 
@@ -110,10 +127,13 @@ public class Gui extends JFrame {
 
 		contentPane.setBorder(BorderFactory.createTitledBorder("Script Info"));
 		contentPane.add(scriptLabel);
-		contentPane.add(scriptNameLabel);
+		contentPane.add(scriptValueLabel);
 
 		contentPane.add(runtimeLabel);
-		contentPane.add(runtimeTimeLabel);
+		contentPane.add(runtimeValueLabel);
+
+		contentPane.add(statusLabel);
+		contentPane.add(statusValueLabel);
 
 		contentPane.add(tabArea);
 
@@ -123,25 +143,24 @@ public class Gui extends JFrame {
 	}
 
 	public void updateRows(final Object[][] data) {
-		// if(logger != null) logger.log("Updating table data");
-		tableData = data;	// tableData is the field which was used in the
-							// table's initial construction
-		model = new DefaultTableModel(data, columns);
-		model.setRowCount(0);
-		for (int i = 0; i < data.length; i++) {
-			model.addRow(data[i]);
-		}
-		model.fireTableRowsUpdated(0, model.getRowCount());
-		table.setModel(model);
+		this.model.setDataVector(data, columns);
+		this.model.fireTableDataChanged();
 	}
 
 	public Object[][] getTableData() {
-		return tableData;
+		return this.tableData;
 
 	}
 
 	String getTimeRunning() {
-		return runTime.toElapsedString();
+		return this.runTime.toElapsedString();
 	}
 
+}
+
+class WindowEventHandler extends WindowAdapter {
+	public void windowClosing(WindowEvent evt) {
+		if (Gui.superclass != null)
+			Gui.superclass.shutdown();
+	}
 }
