@@ -20,7 +20,9 @@ public class Logger {
 		Date currentDate = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
 
-		logDir = Environment.getStorageDirectory() + "/.GCLogs/";
+		logDir = Environment.getStorageDirectory() + "\\GCLogs\\";
+
+		System.out.println("Saving logs to: " + logDir);
 
 		if (!new File(logDir).exists()) {
 			System.out.println(logDir
@@ -34,6 +36,9 @@ public class Logger {
 		try {
 			file = new File(logFile);
 			if (!file.exists()) {
+				file.createNewFile();
+			} else {
+				file.delete();
 				file.createNewFile();
 			}
 
@@ -63,6 +68,17 @@ public class Logger {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public void close() {
+		if(this.out != null) {
+			try {
+				this.out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
 		}
 	}
 
