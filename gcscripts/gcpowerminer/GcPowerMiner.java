@@ -38,10 +38,10 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 
 	@Override
 	public void onStart() {
-		logger = new Logger(this);
+		logger = new Logger(this); // Initialises the logger
 		logger.log("Started script.");
-		gui = new Gui("GC Power Miner", logger, getData(), this);
-		provide(new CookBacon(), new EatBacon());
+		gui = new Gui("GC Power Miner", logger, getData(), this); // Initialises the GUI
+		provide(new CookBacon(), new EatBacon()); // Provides nodes for mining and dropping
 		// new Branch(new CookBacon(), new EatBacon());
 		// fryingPan = new Tree();
 	}
@@ -57,16 +57,17 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 				logger.log("Provided node: " + job.getClass().getSimpleName());
 			}
 		}
-		fryingPan = new Tree(fridge.toArray(new Node[fridge.size()]));
+		fryingPan = new Tree(fridge.toArray(new Node[fridge.size()])); // Reconstructs the updated tree
 	}
 
 	public synchronized final void revoke(final Node... jobs) {
 		for (final Node job : jobs) {
 			if (fridge.contains(job)) {
 				fridge.remove(job);
+				logger.log("Revoked node: " + job.getClass().getSimpleName());
 			}
 		}
-		fryingPan = new Tree(fridge.toArray(new Node[fridge.size()]));
+		fryingPan = new Tree(fridge.toArray(new Node[fridge.size()])); // Reconstructs the updated tree
 	}
 
 	public final void submit(final Job... jobs) {
@@ -80,14 +81,9 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 		if (gui != null && !gui.isVisible())
 			gui.setVisible(true);
 		
-		if (getData() != null && gui != null)
-			gui.updateRows(getData());
-		
 		if (problemFound) {
-			logger.close();
-			Game.logout(true);
 			this.stop();
-			return -1;
+			Game.logout(true);
 		}
 
 		if (fryingPan != null) {
@@ -104,10 +100,12 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 
 	@Override
 	public void messageReceived(MessageEvent msg) {
-		if (msg.getId() == 109) {
+		if (msg.getId() == 109) { // Checks if message sent by game server
 			if (msg.getMessage().contains("mine some")) {
 				logger.log("Ore successfully mined.");
 				oresMined++;
+				if (getData() != null && gui != null) // Why bother updating on loop? Waste of CPU
+					gui.updateRows(getData());
 			}
 			if (msg.getMessage().contains("a pickaxe")) {
 				logger.log("Player does not have a pickaxe, stopping.");
@@ -120,23 +118,24 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 	}
 
 	private Object[][] getData() {
-		if (gui != null) {
+		if (gui != null) { // Checks if GUI has been initialised
 			return new Object[][] {
 					{ "Ores mined:", getOresMined() },
-					{ "Ores per hour:", CalculationMethods.perHour(getOresMined(), gui.runTime) },
 					{ "Exp gained:", getOresMined() * 35 },
-					{ "Exp gained:", CalculationMethods.perHour(getOresMined() * 35, gui.runTime) } };
+					{ "Ores per hour:", CalculationMethods.perHour(getOresMined(), gui.runTime) },
+					{ "Exp per hour:", CalculationMethods.perHour(getOresMined() * 35, gui.runTime) } };
 		}
-		return new Object[][] {
+		return new Object[][] { // Displays values as 0 because GUI not initialised yet
 				{ "Ores mined:", 0 },
-				{ "Ores per hour:", 0 },
 				{ "Exp gained:", 0 },
-				{ "Exp gained:", 0 } };
+				{ "Ores per hour:", 0 },
+				{ "Exp per hour:", 0 } };
 	}
 
 	@Override
 	public void onStop() {
 		logger.log("Script stopped.");
+		logger.close();
 		gui.dispose();
 	}
 }

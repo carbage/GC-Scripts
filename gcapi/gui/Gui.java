@@ -126,7 +126,7 @@ public class Gui extends JFrame {
 
 		setContentPane(contentPane);
 
-		contentPane.setBorder(BorderFactory.createTitledBorder("Script Info"));
+		// contentPane.setBorder(BorderFactory.createTitledBorder("Script Info"));
 		contentPane.add(scriptLabel);
 		contentPane.add(scriptValueLabel);
 
@@ -145,11 +145,11 @@ public class Gui extends JFrame {
 
 	public void updateRows(final Object[][] data) {
 		SwingUtilities.invokeLater(new Runnable() {
-		    public void run() {
-		    	model.setDataVector(data, columns);
+			public void run() {
+				model.setDataVector(data, columns);
 				model.fireTableDataChanged();
-		    }
-		});		
+			}
+		});
 	}
 
 	public Object[][] getTableData() {

@@ -1,8 +1,8 @@
 package gcapi.constants.interfaces;
 
 public final class Main {
-	
-	//Main interface
+
+	// Main interface
 	public static final int TAB_AREA_PARENT = 548;
 	public static final int TAB_AREA_SUMMONING_TAB = 70;
 	public static final int TAB_AREA_FRIENDS_TAB = 71;
@@ -20,17 +20,15 @@ public final class Main {
 	public static final int TAB_AREA_EQUIPMENT_TAB = 94;
 	public static final int TAB_AREA_PRAYERS_TAB = 95;
 	public static final int TAB_AREA_SPELLS_TAB = 96;
-	
-	//Combat tab
+
+	// Combat tab
 	public static final int COMBAT_TAB_PARENT = 884;
 	public static final int COMBAT_TAB_MAIN = 3;
 	public static final int COMBAT_TAB_PUNCH = 7;
 	public static final int COMBAT_TAB_KICK = 8;
 	public static final int COMBAT_TAB_BLOCK = 9;
-	
 
-	
-	//Skills tab
+	// Skills tab
 	public static final int SKILLS_TAB_PARENT = 884;
 	public static final int SKILLS_TAB_ATTACK = 1;
 	public static final int SKILLS_TAB_HP = 2;
@@ -57,5 +55,5 @@ public final class Main {
 	public static final int SKILLS_TAB_HUNTER = 103;
 	public static final int SKILLS_TAB_SUMMONING = 109;
 	public static final int SKILLS_TAB_DUNGEONEERING = 115;
-	
+
 }
