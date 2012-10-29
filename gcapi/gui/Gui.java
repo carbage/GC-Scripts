@@ -73,6 +73,8 @@ public class Gui extends JFrame {
 		logger.log("Initialised GUI.");
 
 		this.runTime = new Timer(0);
+		
+		
 
 		setTitle("GC GUI");
 		setPreferredSize(new Dimension(350, 300));

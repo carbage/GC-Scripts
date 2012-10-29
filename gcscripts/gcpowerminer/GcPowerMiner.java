@@ -94,7 +94,8 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 				job.join();
 			}
 		}
-
+		
+		System.gc();
 		return Random.nextInt(10, 50);
 	}
 
