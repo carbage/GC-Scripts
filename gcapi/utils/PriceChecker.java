@@ -6,13 +6,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Crash
- * Date: 14/07/12
- * Time: 14:52
- * To change this template use File | Settings | File Templates.
- */
 public class PriceChecker {
 	
     @SuppressWarnings("unused")

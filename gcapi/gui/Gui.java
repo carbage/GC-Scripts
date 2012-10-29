@@ -19,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
 import org.powerbot.game.api.util.Timer;
 
@@ -35,18 +36,11 @@ public class Gui extends JFrame {
 	private JLabel scriptNameLabel = new JLabel();
 
 	private JLabel runtimeLabel = new JLabel();
-	private JLabel runtimeTimeLabel = new JLabel() {
-		@Override
-		protected void paintComponent(Graphics g) {
-			runtimeTimeLabel.setText(getTimeRunning());
-			System.out.println(getTimeRunning());
-			super.paintComponent(g);
-		}
-	};
+	private JLabel runtimeTimeLabel = new JLabel();
 
 	private JTabbedPane tabArea = new JTabbedPane();
 	private JScrollPane tableScrollPane;
-	private AbstractTableModel model;
+	private DefaultTableModel model;
 	private JTable table;
 
 	private String[] columns = new String[] { "Data", "Value" };
@@ -57,8 +51,12 @@ public class Gui extends JFrame {
 
 	private int PADDING = 5;
 
+	private Logger logger;
+
 	@SuppressWarnings("serial")
 	public Gui(String scriptName, Logger logger, Object[][] data) {
+		
+		this.logger = logger;
 
 		startTime = System.currentTimeMillis();
 
@@ -67,7 +65,7 @@ public class Gui extends JFrame {
 		runTime = new Timer(0);
 
 		setTitle("GC GUI");
-		setPreferredSize(new Dimension(400, 350));
+		setPreferredSize(new Dimension(350, 300));
 		setResizable(false);
 		setLayout(new FlowLayout(FlowLayout.LEADING, PADDING, PADDING));
 
@@ -81,33 +79,21 @@ public class Gui extends JFrame {
 		runtimeLabel.setLabelFor(runtimeTimeLabel);
 		runtimeLabel.setPreferredSize(new Dimension(120, 20));
 		runtimeTimeLabel.setPreferredSize(new Dimension(120, 20));
+		new Thread() {
+			public void run() {
+				while (true) {
+					runtimeTimeLabel.setText(getTimeRunning());
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 
-		model = new AbstractTableModel() {
-			public String getColumnName(int col) {
-				return columns[col].toString();
 			}
+		}.start();
 
-			public int getRowCount() {
-				return tableData.length;
-			}
-
-			public int getColumnCount() {
-				return columns.length;
-			}
-
-			public Object getValueAt(int row, int col) {
-				return tableData[row][col];
-			}
-
-			public boolean isCellEditable(int row, int col) {
-				return true;
-			}
-
-			public void setValueAt(Object value, int row, int col) {
-				tableData[row][col] = value;
-				fireTableCellUpdated(row, col);
-			}
-		};
+		model = new DefaultTableModel(data, columns);
 
 		tableData = data;
 		table = new JTable(model) {
@@ -136,10 +122,28 @@ public class Gui extends JFrame {
 
 	}
 
-	public void updateRows(Object[][] data) {
-		tableData = data;
-		table.revalidate();
-		model.fireTableDataChanged();
+	public void updateRows(final Object[][] data) {
+		//if(logger != null) logger.log("Updating table data");
+		tableData = data;	// tableData is the field which was used in the
+							// table's initial constructio
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {				
+				model = new DefaultTableModel(data, columns);
+				model.setRowCount(0);
+				for (int i = 0; i < data.length; i++) {
+					model.addRow(data[i]);
+				}
+				model.fireTableRowsUpdated(0, model.getRowCount());
+				table.setModel(model);
+				model.fireTableRowsUpdated(0, model.getRowCount());
+			}
+		});
+
+	}
+	
+	public Object[][] getTableData() {
+		return tableData;
+			
 	}
 
 	String getTimeRunning() {
