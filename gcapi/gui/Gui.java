@@ -52,7 +52,7 @@ public class Gui extends JFrame {
 	private Object[][] tableData;
 
 	private long startTime;
-	private Timer runTime;
+	public Timer runTime;
 
 	private int PADDING = 5;
 
@@ -78,6 +78,7 @@ public class Gui extends JFrame {
 		setPreferredSize(new Dimension(350, 300));
 		setResizable(false);
 		setLayout(new FlowLayout(FlowLayout.LEADING, PADDING, PADDING));
+		addWindowListener(new WindowEventHandler());
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		scriptLabel.setText("Script Name:");
@@ -121,7 +122,7 @@ public class Gui extends JFrame {
 
 		tableScrollPane = new JScrollPane(table);
 		tabArea.addTab("Script Info", tableScrollPane);
-		tableScrollPane.setPreferredSize(new Dimension(350, 200));
+		tableScrollPane.setPreferredSize(new Dimension(300, 150));
 
 		setContentPane(contentPane);
 
@@ -143,8 +144,12 @@ public class Gui extends JFrame {
 	}
 
 	public void updateRows(final Object[][] data) {
-		this.model.setDataVector(data, columns);
-		this.model.fireTableDataChanged();
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+		    	model.setDataVector(data, columns);
+				model.fireTableDataChanged();
+		    }
+		});		
 	}
 
 	public Object[][] getTableData() {

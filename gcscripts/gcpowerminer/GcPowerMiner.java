@@ -1,6 +1,7 @@
 package gcscripts.gcpowerminer;
 
 import gcapi.gui.Gui;
+import gcapi.methods.CalculationMethods;
 import gcapi.utils.Logger;
 import gcscripts.gcpowerminer.nodes.CookBacon;
 import gcscripts.gcpowerminer.nodes.EatBacon;
@@ -13,6 +14,7 @@ import org.powerbot.core.event.events.MessageEvent;
 import org.powerbot.core.event.listeners.MessageListener;
 import org.powerbot.core.script.ActiveScript;
 import org.powerbot.core.script.job.Job;
+import org.powerbot.core.script.job.state.Branch;
 import org.powerbot.core.script.job.state.Node;
 import org.powerbot.core.script.job.state.Tree;
 import org.powerbot.game.api.Manifest;
@@ -40,11 +42,8 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 		logger.log("Started script.");
 		gui = new Gui("GC Power Miner", logger, getData(), this);
 		provide(new CookBacon(), new EatBacon());
-	}
-
-	private Object[][] getData() {
-		return new Object[][] { { "Ores mined:", getOresMined() },
-				{ "Exp gained:", getOresMined() * 35 } };
+		// new Branch(new CookBacon(), new EatBacon());
+		// fryingPan = new Tree();
 	}
 
 	private int getOresMined() {
@@ -80,6 +79,10 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 	public int loop() {
 		if (gui != null && !gui.isVisible())
 			gui.setVisible(true);
+		
+		if (getData() != null && gui != null)
+			gui.updateRows(getData());
+		
 		if (problemFound) {
 			logger.close();
 			Game.logout(true);
@@ -105,8 +108,6 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 			if (msg.getMessage().contains("mine some")) {
 				logger.log("Ore successfully mined.");
 				oresMined++;
-				if (getData() != null && gui != null)
-					gui.updateRows(getData());
 			}
 			if (msg.getMessage().contains("a pickaxe")) {
 				logger.log("Player does not have a pickaxe, stopping.");
@@ -117,7 +118,22 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 			}
 		}
 	}
-	
+
+	private Object[][] getData() {
+		if (gui != null) {
+			return new Object[][] {
+					{ "Ores mined:", getOresMined() },
+					{ "Ores per hour:", CalculationMethods.perHour(getOresMined(), gui.runTime) },
+					{ "Exp gained:", getOresMined() * 35 },
+					{ "Exp gained:", CalculationMethods.perHour(getOresMined() * 35, gui.runTime) } };
+		}
+		return new Object[][] {
+				{ "Ores mined:", 0 },
+				{ "Ores per hour:", 0 },
+				{ "Exp gained:", 0 },
+				{ "Exp gained:", 0 } };
+	}
+
 	@Override
 	public void onStop() {
 		logger.log("Script stopped.");
