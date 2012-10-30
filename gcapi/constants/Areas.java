@@ -27,12 +27,12 @@ public final class Areas {
 	    new Tile(2843, 3539, 0), new Tile(2844, 3539, 0) });
 
     public static final Area WARRIORS_GUILD_FIRST_FLOOR = new Area(new Tile[] {
-	    new Tile(2877, 3531, 0), new Tile(2877, 3551, 0),
-	    new Tile(2838, 3531, 0), new Tile(2838, 3551, 0) });
+	    new Tile(2836, 3553, 0), new Tile(2877, 3553, 0),
+	    new Tile(2877, 3528, 0), new Tile(2836, 3528, 0) });
 
     public static final Area WARRIORS_GUILD_SECOND_FLOOR = new Area(new Tile[] {
-	    new Tile(2877, 3531, 1), new Tile(2877, 3551, 1),
-	    new Tile(2838, 3531, 1), new Tile(2838, 3551, 1) });
+	    new Tile(2836, 3553, 1), new Tile(2877, 3553, 1),
+	    new Tile(2877, 3528, 1), new Tile(2836, 3528, 1) });
 
     public static final Area WARRIORS_GUILD_SHOTPUT_ROOM = new Area(new Tile[] {
 	    new Tile(2858, 3540, 1), new Tile(2875, 3553, 1),
@@ -43,9 +43,9 @@ public final class Areas {
 	    new Tile(2861, 3544, 1), new Tile(2861, 3544, 1) });
 
     public static final Area WARRIORS_GUILD_THIRD_FLOOR = new Area(new Tile[] {
-	    new Tile(2877, 3531, 2), new Tile(2877, 3551, 2),
-	    new Tile(2838, 3531, 2), new Tile(2838, 3551, 2) });
-
+	    new Tile(2836, 3553, 2), new Tile(2877, 3553, 2),
+	    new Tile(2877, 3528, 2), new Tile(2836, 3528, 2) });
+    
     public static final Area WARRIORS_GUILD_CYCLOPS_AREA = new Area(new Tile[] {
 	    new Tile(2838, 3539, 2), new Tile(2838, 3551, 2),
 	    new Tile(2875, 3551, 2), new Tile(2875, 3533, 2),

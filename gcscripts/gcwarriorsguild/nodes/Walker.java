@@ -26,22 +26,20 @@ public class Walker extends Node {
 
     @Override
     public boolean activate() {
-	return player.isIdle()
+	return Players.getLocal().isIdle()
 		&& Game.isLoggedIn()
 		&& !GcWarriorsGuild.isBanking
-		&& (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(player
-			.getLocation())
-			|| Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(player
-				.getLocation()) || Areas.WARRIORS_GUILD_THIRD_FLOOR
-			    .contains(player.getLocation()));
+		&& (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal())
+			    || Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
+				    .getLocal())
+			    || Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players
+				    .getLocal()));
     }
 
     @Override
     public void execute() {
 
 	SceneObject staircase = SceneEntities.getNearest(STAIRCASE_IDS);
-	Tile staircaseTile = LocationMethods.getObjectBox(staircase)
-		.getNearest();
 	if (staircase == null) {
 	    GcWarriorsGuild.logger
 		    .log("No staircases nearby, stopping script.");
@@ -49,11 +47,10 @@ public class Walker extends Node {
 	}
 
 	if (GcWarriorsGuild.collectingTokens) {
-	    if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(player.getLocation())) {
+	    if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal()
+		    .getLocation())) {
 		GcWarriorsGuild.logger
 			.log("Player is on first floor, moving upstairs.");
-
-		// Use this for any walk to and click object or npc etc
 		if (!staircase.isOnScreen()) {
 		    while (Calculations.distanceTo(staircase) > 4D) {
 			if (!Players.getLocal().isMoving()) {
@@ -63,11 +60,11 @@ public class Walker extends Node {
 		}
 		staircase.click(true);
 	    }
-	    if (Areas.WARRIORS_GUILD_SECOND_FLOOR
-		    .contains(player.getLocation())) {
-		if (player.getLocation().getX() <= 2852
-			&& player.getLocation().getX() > 2852
-			&& player.getPlane() == 2) {
+	    if (Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players.getLocal()
+		    .getLocation())) {
+		if (Players.getLocal().getLocation().getX() <= 2852
+			&& Players.getLocal().getLocation().getX() > 2852
+			&& Players.getLocal().getPlane() == 2) {
 		    GcWarriorsGuild.logger
 			    .log("Player is behind heavy door, moving through door.");
 		    SceneObject door = SceneEntities.getNearest(HEAVY_DOOR_ID);
@@ -82,8 +79,8 @@ public class Walker extends Node {
 			door.click(true);
 		    }
 
-		} else if (player.getLocation().getX() > 2852
-			&& player.getPlane() == 2) {
+		} else if (Players.getLocal().getLocation().getX() > 2852
+			&& Players.getLocal().getPlane() == 2) {
 		    GcWarriorsGuild.logger
 			    .log("Player is behind door to shotput room, moving through door.");
 		    SceneObject door = SceneEntities
@@ -115,7 +112,8 @@ public class Walker extends Node {
 		    }
 		}
 	    }
-	    if (Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(player.getLocation())) {
+	    if (Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players.getLocal()
+		    .getLocation())) {
 		GcWarriorsGuild.logger
 			.log("Player is on third floor, moving downstairs.");
 		if (Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(player
@@ -145,14 +143,16 @@ public class Walker extends Node {
 		staircase.click(true);
 	    }
 	} else {
-	    if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(player.getLocation())) {
+	    if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal()
+		    .getLocation())) {
 
 	    }
-	    if (Areas.WARRIORS_GUILD_SECOND_FLOOR
-		    .contains(player.getLocation())) {
+	    if (Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players.getLocal()
+		    .getLocation())) {
 
 	    }
-	    if (Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(player.getLocation())) {
+	    if (Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players.getLocal()
+		    .getLocation())) {
 
 	    }
 	}

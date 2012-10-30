@@ -58,16 +58,16 @@ public class Banker extends Node {
 	} else {
 	    SceneObject staircase = SceneEntities.getNearest(STAIRCASE_IDS);
 	    Area staircaseArea = LocationMethods.getObjectBox(staircase);
-	    if (player.getHeight() == 0) {
+	    if (Players.getLocal().getHeight() == 0) {
 		Walking.walk(Areas.WARRIORS_GUILD_BANK_AREA.getNearest());
-	    } else if (player.getHeight() == 1) {
-		if (staircaseArea.contains(player.getLocation())) {
+	    } else if (Players.getLocal().getHeight() == 1) {
+		if (staircaseArea.contains(Players.getLocal().getLocation())) {
 		    staircase.interact("Climb-down");
 		}
-	    } else if (player.getHeight() == 2) {
+	    } else if (Players.getLocal().getHeight() == 2) {
 		if (!Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(player
 			.getLocation())) {
-		    if (staircaseArea.contains(player.getLocation())) {
+		    if (staircaseArea.contains(Players.getLocal().getLocation())) {
 			staircase.interact("Climb-down");
 		    } else {
 			Walking.walk(staircaseArea.getNearest());

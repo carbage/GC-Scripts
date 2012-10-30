@@ -9,16 +9,14 @@ import org.powerbot.game.api.wrappers.interactive.Player;
 
 public class FightCyclopes extends Node {
 
-    Player player = Players.getLocal();
-
     @Override
     public boolean activate() {
-	return Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(player.getLocation());
+	return Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(Players.getLocal().getLocation());
     }
 
     @Override
     public void execute() {
-	if (player.isIdle() && !player.isInCombat()) {
+	if (Players.getLocal().isIdle() && !Players.getLocal().isInCombat()) {
 	    NPCs.getNearest(gcapi.constants.NPCs.CYCLOPES).click(true);
 	}
     }
