@@ -107,6 +107,6 @@ public class ScriptSkeleton extends ActiveScript {
 	public void onStop() {
 		logger.log("Script stopped.");
 		logger.close();
-		gui.dispose();
+		if(gui != null) gui.dispose();
 	}
 }

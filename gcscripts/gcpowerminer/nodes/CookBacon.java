@@ -1,5 +1,6 @@
 package gcscripts.gcpowerminer.nodes;
 
+import gcapi.methods.LocationMethods;
 import gcscripts.gcpowerminer.GcPowerMiner;
 
 import org.powerbot.core.script.job.Task;
@@ -35,10 +36,7 @@ public class CookBacon extends Node { // This class mines the closest ore
 			SceneObject rock = SceneEntities.getNearest(IRON_ROCKS);
 			if (rock != null && !rockfound) {
 				rockfound = true;
-				oreArea = new Area(new Tile(rock.getLocation().getX() + 1, rock
-						.getLocation().getY() + 1, 0), new Tile(rock
-						.getLocation().getX() - 1,
-						rock.getLocation().getY() - 1, 0));
+				//oreArea = LocationMethods.getObjectBox(rock);
 				// if (oreArea.contains(Players.getLoaded())) {*/
 				GcPowerMiner.logger.log("Found rock with id: " + rock.getId());
 				rock.click(true);

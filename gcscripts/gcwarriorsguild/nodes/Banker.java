@@ -1,14 +1,14 @@
 package gcscripts.gcwarriorsguild.nodes;
 
+import gcscripts.gcwarriorsguild.GcWarriorsGuild;
+
 import org.powerbot.core.script.job.state.Node;
 
-public class FightCyclopes extends Node {
-		
-	private int[] CYCLOPS_IDS = { };
+public class Banker extends Node {
 
 	@Override
 	public boolean activate() {
-		return true;
+		return GcWarriorsGuild.isBanking;
 	}
 
 	@Override

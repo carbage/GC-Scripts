@@ -145,6 +145,6 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 	public void onStop() {
 		logger.log("Script stopped.");
 		logger.close();
-		gui.dispose();
+		if(gui != null) gui.dispose();
 	}
 }

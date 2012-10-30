@@ -4,6 +4,7 @@ import gcapi.constants.Areas;
 import gcapi.gui.Gui;
 import gcapi.utils.Antiban;
 import gcapi.utils.Logger;
+import gcscripts.gcwarriorsguild.branches.DefenderFarmer;
 import gcscripts.gcwarriorsguild.branches.TokenFarmer;
 import gcscripts.gcwarriorsguild.nodes.CheckForFood;
 
@@ -12,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.powerbot.core.script.ActiveScript;
-import org.powerbot.core.script.job.Job;
 import org.powerbot.core.script.job.state.Node;
 import org.powerbot.core.script.job.state.Tree;
 import org.powerbot.game.api.Manifest;
@@ -32,11 +32,15 @@ public class GcWarriorsGuild extends ActiveScript {
 			.synchronizedList(new ArrayList<Node>());
 	private Tree jobContainer = null;
 
+
 	private static Gui gui;
 	
 	public static boolean collectingTokens = true;
 	public static int defenderId;
+	public static String defenderType;
 	public static boolean guiClosed = false;
+
+	public static boolean isBanking = false;
 	
 
 	@Override
@@ -44,19 +48,24 @@ public class GcWarriorsGuild extends ActiveScript {
 		logger = new Logger(this); // Initialises the logger
 		logger.log("Started script.");
 		Player player = Players.getLocal();
+		//while(!Game.isLoggedIn()) {}
 		if (!Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(player)
-				&& Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(player)
-				&& Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(player)) {
+				&& !Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(player)
+				&& !Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(player)) {
 			problemFound = true;
-		} else  {
-			new SelectorGui(this);
-			while(!guiClosed) {}			
-			gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
-			if(collectingTokens) {
-				provide(new TokenFarmer(new Node[] { } ));
-			}
-			provide(new CheckForFood(), new Antiban()); // Provides antiban
 		}
+		new SelectorGui(this);
+		logger.log("Initialised selection GUI.");
+		while(!guiClosed) {}		
+		gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
+		if(collectingTokens) {
+			logger.log("Collecting tokens.");
+			provide(new TokenFarmer(new Node[] { } ));
+		} else {
+			logger.log("Collecting " + defenderType + " defenders.");
+			provide(new DefenderFarmer(new Node[] { } ));
+		}
+		provide(new CheckForFood(), new Antiban()); // Provides antiban
 	}
 
 	public synchronized final void provide(final Node... jobs) {
@@ -68,23 +77,6 @@ public class GcWarriorsGuild extends ActiveScript {
 		}
 		jobContainer = new Tree(jobsCollection.toArray(new Node[jobsCollection
 				.size()])); // Reconstructs the updated tree
-	}
-
-	public synchronized final void revoke(final Node... jobs) {
-		for (final Node job : jobs) {
-			if (jobsCollection.contains(job)) {
-				jobsCollection.remove(job);
-				logger.log("Revoked node: " + job.getClass().getSimpleName());
-			}
-		}
-		jobContainer = new Tree(jobsCollection.toArray(new Node[jobsCollection
-				.size()])); // Reconstructs the updated tree
-	}
-
-	public final void submit(final Job... jobs) {
-		for (final Job job : jobs) {
-			getContainer().submit(job);
-		}
 	}
 
 	@Override
@@ -128,6 +120,6 @@ public class GcWarriorsGuild extends ActiveScript {
 	public void onStop() {
 		logger.log("Script stopped.");
 		logger.close();
-		gui.dispose();
+		if(gui != null) gui.dispose();
 	}
 }

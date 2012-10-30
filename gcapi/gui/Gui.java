@@ -49,7 +49,7 @@ public class Gui extends JFrame {
 	private long startTime;
 	public Timer runTime;
 
-	private int PADDING = 5;
+	private int PADDING = 10;
 
 	private Logger logger;
 
@@ -60,7 +60,7 @@ public class Gui extends JFrame {
 			ActiveScript parent) {
 
 		this.logger = logger;
-		logger.log("Initialised GUI.");
+		logger.log("Initialised stats GUI.");
 
 		this.parent = parent;
 
