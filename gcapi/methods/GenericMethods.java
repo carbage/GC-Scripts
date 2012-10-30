@@ -1,5 +1,7 @@
 package gcapi.methods;
 
+import org.powerbot.game.api.util.Timer;
+
 
 
 
@@ -13,8 +15,9 @@ public final class GenericMethods {
 		}
 	}
 	
-	public static void waitForCondition(boolean condition) { // Waits for any condition (boolean)
-	    while (!condition) {}
+	public static void waitForCondition(boolean condition, long timeout) { // Waits for any condition (boolean)
+	    Timer timer = new Timer(timeout);
+	    while (!condition && timer.isRunning()) {}
 	}
 	
 }

@@ -67,7 +67,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
     public static int initialTokens;
     public static int tokensGained;
 
-    public static boolean isBanking = true;
+    public static boolean isBanking = false;
 
     public static boolean hasDefender = false;
 
@@ -79,39 +79,45 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 	if (Players.getLocal() == null) {
 	    problemFound = true;
 	} else {
-	    if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal())
-		    || Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
-			    .getLocal())
-		    || Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players
-			    .getLocal())) {
-		selectorGui = new SelectorGui(this);
-		logger.log("Initialised selection GUI.");
-		while (!guiClosed) {
-		    Time.sleep(100);
-		}
-		selectorGui.dispose();
-		gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
-									      // GUI
-		if (collectingTokens) {
-		    provide(new TokenFarmer(new Node[] { new ThrowShotput() }));
-		} else {
-		    logger.log("Collecting " + defenderType + " defenders.");
-		    if (Inventory.containsOneOf(defenderId - 1)
-			    || Equipment
-				    .appearanceContainsOneOf(defenderId - 1)) {
-			logger.log("Players.getLocal() does not have any defenders, banking.");
-			isBanking = true;
-			hasDefender = false;
+	    if (Game.isLoggedIn()) {
+		if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players
+			.getLocal())
+			|| Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
+				.getLocal())
+			|| Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players
+				.getLocal())) {
+		    selectorGui = new SelectorGui(this);
+		    logger.log("Initialised selection GUI.");
+		    while (!guiClosed) {
+			Time.sleep(100);
 		    }
-		    logger.log("Players.getLocal() does have a defender, continuing.");
-		    provide(new DefenderFarmer(new Node[] {
-			    new FightCyclopes(), new DefenderCollector() }));
+		    selectorGui.dispose();
+		    gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
+										  // GUI
+		    if (collectingTokens) {
+			provide(new TokenFarmer(
+				new Node[] { new ThrowShotput() }));
+		    } else {
+			logger.log("Collecting " + defenderType + " defenders.");
+			if (Inventory.containsOneOf(defenderId - 1)
+				|| Equipment
+					.appearanceContainsOneOf(defenderId - 1)) {
+			    logger.log("Players.getLocal() does not have any defenders, banking.");
+			    isBanking = true;
+			    hasDefender = false;
+			}
+			logger.log("Players.getLocal() does have a defender, continuing.");
+			provide(new DefenderFarmer(new Node[] {
+				new FightCyclopes(), new DefenderCollector() }));
+		    }
+		    provide(new CheckForFood(), new Walker(), new Banker(),
+			    new Antiban());
+		    init = true;
+		} else {
+		    logger.log("Player is not in the Warriors' Guild, stopping.");
+		    problemFound = true;
 		}
-		provide(new CheckForFood(), new Walker(), new Banker(),
-			new Antiban());
-		init = true;
 	    } else {
-		logger.log("Player is not in the Warriors' Guild, stopping.");
 		problemFound = true;
 	    }
 	}
@@ -222,24 +228,46 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
     public void onRepaint(Graphics g) {
 	if (Game.isLoggedIn() && Players.getLocal() != null) {
 	    if (Players.getLocal() != null) {
-		g.setColor(Color.WHITE);
 		switch (Players.getLocal().getPlane()) {
 		case 0:
+		    g.setColor(Color.WHITE);
 		    for (Tile t : Areas.WARRIORS_GUILD_FIRST_FLOOR
+			    .getTileArray()) {
+			t.draw(g);
+		    }
+		    g.setColor(Color.GREEN);
+		    for (Tile t : Areas.WARRIORS_GUILD_BANK_AREA
 			    .getTileArray()) {
 			t.draw(g);
 		    }
 		    break;
 
 		case 1:
+		    g.setColor(Color.WHITE);
 		    for (Tile t : Areas.WARRIORS_GUILD_SECOND_FLOOR
+			    .getTileArray()) {
+			t.draw(g);
+		    }
+		    g.setColor(Color.BLUE);
+		    for (Tile t : Areas.WARRIORS_GUILD_SHOTPUT_ROOM
+			    .getTileArray()) {
+			t.draw(g);
+		    }
+		    g.setColor(Color.YELLOW);
+		    for (Tile t : Areas.WARRIORS_GUILD_SHOTPUT_AREA
 			    .getTileArray()) {
 			t.draw(g);
 		    }
 		    break;
 
 		case 2:
+		    g.setColor(Color.WHITE);
 		    for (Tile t : Areas.WARRIORS_GUILD_THIRD_FLOOR
+			    .getTileArray()) {
+			t.draw(g);
+		    }
+		    g.setColor(Color.RED);
+		    for (Tile t : Areas.WARRIORS_GUILD_CYCLOPS_AREA
 			    .getTileArray()) {
 			t.draw(g);
 		    }

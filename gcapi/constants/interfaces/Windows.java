@@ -71,5 +71,24 @@ public final class Windows {
 	 */
 	public static final int BANK_PIN_PARENT = 13;
 	public static final int BANK_PIN_MAIN = 0;
+	
+	/*
+	 * Lodestone interface IDs
+	 */
+	private static final int LODESTONE_INTERFACE_PARENT = 1092;
+	private static final int LODESTONE_LUNAR_ISLE = 39;
+	private static final int LODESTONE_AL_KHARID = 40;
+	private static final int LODESTONE_ARDOUGNE = 41;
+	private static final int LODESTONE_BURTHORPE = 42;
+	private static final int LODESTONE_CATHERBY = 43;
+	private static final int LODESTONE_DRAYNORE = 44;
+	private static final int LODESTONE_EDGEVILLE = 45;
+	private static final int LODESTONE_FALADOR = 46;
+	private static final int LODESTONE_LUMBRIDGE = 47;
+	private static final int LODESTONE_PORT_SARIM = 48;
+	private static final int LODESTONE_SEERS_VILLAGE = 49;
+	private static final int LODESTONE_TAVERLY = 50;
+	private static final int LODESTONE_VARROCK = 51;
+	private static final int LODESTONE_YANILLE = 52;
 
 }

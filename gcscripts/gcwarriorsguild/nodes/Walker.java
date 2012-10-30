@@ -26,18 +26,21 @@ public class Walker extends Node {
 
     @Override
     public boolean activate() {
+	System.out.println("Nigga");
 	return Players.getLocal().isIdle()
 		&& Game.isLoggedIn()
 		&& !GcWarriorsGuild.isBanking
-		&& (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal())
-			    || Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
-				    .getLocal())
-			    || Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players
-				    .getLocal()));
+		&& (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players
+			.getLocal())
+			|| Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
+				.getLocal()) || Areas.WARRIORS_GUILD_THIRD_FLOOR
+			    .contains(Players.getLocal()));
     }
 
     @Override
     public void execute() {
+
+	System.out.println("Walking or something");
 
 	SceneObject staircase = SceneEntities.getNearest(STAIRCASE_IDS);
 	if (staircase == null) {

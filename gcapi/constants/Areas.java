@@ -35,22 +35,30 @@ public final class Areas {
 	    new Tile(2877, 3528, 1), new Tile(2836, 3528, 1) });
 
     public static final Area WARRIORS_GUILD_SHOTPUT_ROOM = new Area(new Tile[] {
-	    new Tile(2858, 3540, 1), new Tile(2875, 3553, 1),
-	    new Tile(2858, 3553, 1), new Tile(2875, 3540, 1) });
+	    new Tile(2858, 3540, 1), new Tile(2858, 3552, 1),
+	    new Tile(2876, 3552, 1), new Tile(2876, 3540, 1) });
 
     public static final Area WARRIORS_GUILD_SHOTPUT_AREA = new Area(new Tile[] {
-	    new Tile(2861, 3542, 1), new Tile(2862, 3544, 1),
-	    new Tile(2861, 3544, 1), new Tile(2861, 3544, 1) });
+	    new Tile(2861, 3542, 0), new Tile(2860, 3543, 0),
+	    new Tile(2862, 3543, 0), new Tile(2863, 3544, 0),
+	    new Tile(2863, 3542, 0) });
 
     public static final Area WARRIORS_GUILD_THIRD_FLOOR = new Area(new Tile[] {
 	    new Tile(2836, 3553, 2), new Tile(2877, 3553, 2),
 	    new Tile(2877, 3528, 2), new Tile(2836, 3528, 2) });
-    
+
     public static final Area WARRIORS_GUILD_CYCLOPS_AREA = new Area(new Tile[] {
 	    new Tile(2838, 3539, 2), new Tile(2838, 3551, 2),
 	    new Tile(2875, 3551, 2), new Tile(2875, 3533, 2),
 	    new Tile(2859, 3533, 2), new Tile(2859, 3530, 2),
 	    new Tile(2849, 3530, 2), new Tile(2848, 3533, 2),
 	    new Tile(2847, 3534, 2), new Tile(2847, 3539, 2) });
+
+    public static final Area LUMBRIDGE_COURTYARD = new Area(new Tile[] {
+	    new Tile(3229, 3220, 0), new Tile(3229, 3217, 0),
+	    new Tile(3226, 3217, 0), new Tile(3225, 3215, 0),
+	    new Tile(3225, 3209, 0), new Tile(3217, 3209, 0),
+	    new Tile(3217, 3228, 0), new Tile(3225, 3228, 0),
+	    new Tile(3225, 3222, 0), new Tile(3226, 3220, 0) });
 
 }
