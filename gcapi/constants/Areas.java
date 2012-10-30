@@ -21,16 +21,22 @@ public final class Areas {
 			new Tile(2717, 3717, 0), new Tile(2718, 3728, 0),
 			new Tile(2718, 3733, 0), new Tile(2713, 3733, 0),
 			new Tile(2709, 3729, 0), new Tile(2705, 3727, 0) });
-	
+
 	public static final Area WARRIORS_GUILD_BANK_AREA = new Area(new Tile[] {
 			new Tile(2843, 3536, 0), new Tile(2844, 3539, 0) });
-	
+
 	public static final Area WARRIORS_GUILD_FIRST_FLOOR = new Area(new Tile[] {
 			new Tile(2838, 3533, 0), new Tile(2877, 3530, 0) });
-	
+
 	public static final Area WARRIORS_GUILD_SECOND_FLOOR = new Area(new Tile[] {
 			new Tile(2838, 3533, 1), new Tile(2877, 3530, 1) });
 	
+	public static final Area WARRIORS_GUILD_SHOTPUT_ROOM = new Area(new Tile[] {
+			new Tile(2858, 3540, 1), new Tile(2875, 3553, 1) });
+	
+	public static final Area WARRIORS_GUILD_SHOTPUT_AREA = new Area(new Tile[] {
+			new Tile(2861, 3542, 1), new Tile(2862, 3544, 1) });
+
 	public static final Area WARRIORS_GUILD_THIRD_FLOOR = new Area(new Tile[] {
 			new Tile(2838, 3533, 2), new Tile(2877, 3530, 2) });
 

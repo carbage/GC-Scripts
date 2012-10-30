@@ -3,7 +3,6 @@ package gcscripts.gcwarriorsguild.nodes;
 import gcapi.constants.Areas;
 import gcapi.constants.Equipment;
 import gcapi.constants.Items;
-import gcapi.constants.SceneObjects;
 import gcapi.methods.LocationMethods;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
@@ -22,6 +21,7 @@ public class Banker extends Node {
 
 	Player player = Players.getLocal();
 	private int[] STAIRCASE_IDS = { 66795, 66796, 66797 };
+	private int CYCLOPS_DOOR_ID;
 
 	@Override
 	public boolean activate() {
@@ -64,11 +64,17 @@ public class Banker extends Node {
 				if (staircaseArea.contains(player.getLocation())) {
 					staircase.interact("Climb-down");
 				}
-			} else if (player.getHeight() == 2 && !Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(player.getLocation())) {
-				if (staircaseArea.contains(player.getLocation())) {
-					staircase.interact("Climb-down");
+			} else if (player.getHeight() == 2) {
+				if (!Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(player.getLocation())) {
+					if (staircaseArea.contains(player.getLocation())) {
+						staircase.interact("Climb-down");
+					} else {
+						Walking.walk(staircaseArea.getNearest());
+					}
 				} else {
-					Walking.walk(staircaseArea.getNearest());
+					SceneObject cyclopsDoor = SceneEntities.getNearest(CYCLOPS_DOOR_ID);
+					Walking.walk(cyclopsDoor);
+					cyclopsDoor.click(true);
 				}
 			}
 		}

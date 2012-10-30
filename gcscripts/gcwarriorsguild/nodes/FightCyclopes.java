@@ -8,9 +8,7 @@ import org.powerbot.game.api.methods.interactive.Players;
 import org.powerbot.game.api.wrappers.interactive.Player;
 
 public class FightCyclopes extends Node {
-		
-	private int[] CYCLOPS_IDS = { };
-	
+
 	Player player = Players.getLocal();
 
 	@Override

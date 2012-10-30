@@ -22,6 +22,8 @@ public class CheckForFood extends Node {
 			} else {
 				Inventory.getItem(Items.FOOD_IDS).getWidgetChild().click(true);
 			}
+		} else if (Inventory.isFull() && Inventory.contains(Items.FOOD_IDS)) {
+			Inventory.getItem(Items.FOOD_IDS).getWidgetChild().click(true);
 		}
 	}
 

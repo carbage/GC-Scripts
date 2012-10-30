@@ -21,11 +21,15 @@ public class SelectorGui extends JFrame {
 
 	public static ActiveScript parent;
 
+	public static Object optionsBox;
+
+	public static Object defendersBox;
+
 	private int PADDING = 10;
 
 	private String[] options = new String[] { "Collect tokens",
 			"Collect defenders" };
-	private String[] defenders = new String[] { "Bronze", "Iron", "Steel",
+	static String[] defenders = new String[] { "Bronze", "Iron", "Steel",
 			"Black", "Mithril", "Adamant", "Rune", "Dragon" };
 
 	public SelectorGui(ActiveScript parent) {
@@ -65,6 +69,7 @@ public class SelectorGui extends JFrame {
 					setVisible(false);
 				} else {
 					GcWarriorsGuild.guiClosed = true;
+					setVisible(false);
 				}
 			}
 		});
@@ -84,7 +89,15 @@ public class SelectorGui extends JFrame {
 
 class WindowEventHandler extends WindowAdapter {
 	public void windowClosing(WindowEvent evt) {
-		if (SelectorGui.parent != null)
-			SelectorGui.parent.shutdown();
+		if (((JComboBox) SelectorGui.optionsBox).getSelectedIndex() == 1) {
+			GcWarriorsGuild.collectingTokens = false;
+			GcWarriorsGuild.defenderId = Equipment.DEFENDER_IDS[((JComboBox) SelectorGui.defendersBox)
+					.getSelectedIndex()];
+			GcWarriorsGuild.defenderType = SelectorGui.defenders[((JComboBox) SelectorGui.defendersBox)
+					.getSelectedIndex()];
+			GcWarriorsGuild.guiClosed = true;
+		} else {
+			GcWarriorsGuild.guiClosed = true;
+		}
 	}
 }
