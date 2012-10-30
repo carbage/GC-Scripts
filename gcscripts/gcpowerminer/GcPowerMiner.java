@@ -2,7 +2,9 @@ package gcscripts.gcpowerminer;
 
 import gcapi.gui.Gui;
 import gcapi.methods.CalculationMethods;
+import gcapi.utils.Antiban;
 import gcapi.utils.Logger;
+import gcscripts.gcpowerminer.branches.Cooker;
 import gcscripts.gcpowerminer.nodes.CookBacon;
 import gcscripts.gcpowerminer.nodes.EatBacon;
 
@@ -39,10 +41,10 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 	public void onStart() {
 		logger = new Logger(this); // Initialises the logger
 		logger.log("Started script.");
-		gui = new Gui("GC Power Miner", logger, getData(), this); // Initialises the GUI
-		provide(new CookBacon(), new EatBacon()); // Provides nodes for mining and dropping
-		// new Branch(new CookBacon(), new EatBacon());
-		// fryingPan = new Tree();
+		gui = new Gui("GC Power Miner", logger, getData(), this); // Initialises
+																	// the GUI
+		provide(new Cooker(new Node[] { new CookBacon(), new EatBacon(),
+				new Antiban() }));
 	}
 
 	private int getOresMined() {
@@ -56,7 +58,7 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 				logger.log("Provided node: " + job.getClass().getSimpleName());
 			}
 		}
-		fryingPan = new Tree(fridge.toArray(new Node[fridge.size()])); // Reconstructs the updated tree
+		fryingPan = new Tree(fridge.toArray(new Node[fridge.size()]));
 	}
 
 	public synchronized final void revoke(final Node... jobs) {
@@ -66,7 +68,7 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 				logger.log("Revoked node: " + job.getClass().getSimpleName());
 			}
 		}
-		fryingPan = new Tree(fridge.toArray(new Node[fridge.size()])); // Reconstructs the updated tree
+		fryingPan = new Tree(fridge.toArray(new Node[fridge.size()]));
 	}
 
 	public final void submit(final Job... jobs) {
@@ -77,13 +79,14 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 
 	@Override
 	public int loop() {
-		if (gui != null && !gui.isVisible())
-			gui.setVisible(true);
-		
+
 		if (problemFound) {
 			this.stop();
 			Game.logout(true);
 		}
+
+		if (gui != null && !gui.isVisible())
+			gui.setVisible(true);
 
 		if (fryingPan != null) {
 			final Node job = fryingPan.state();
@@ -93,7 +96,13 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 				job.join();
 			}
 		}
-		
+		new Runnable() {
+			public void run() {
+				if (getData() != null && gui != null)
+					gui.updateRows(getData());
+			}
+		};
+
 		return Random.nextInt(10, 50);
 	}
 
@@ -103,7 +112,8 @@ public class GcPowerMiner extends ActiveScript implements MessageListener {
 			if (msg.getMessage().contains("mine some")) {
 				logger.log("Ore successfully mined.");
 				oresMined++;
-				if (getData() != null && gui != null) // Why bother updating on loop? Waste of CPU
+				if (getData() != null && gui != null)	// Why bother updating on
+														// loop? Waste of CPU
 					gui.updateRows(getData());
 			}
 			if (msg.getMessage().contains("a pickaxe")) {

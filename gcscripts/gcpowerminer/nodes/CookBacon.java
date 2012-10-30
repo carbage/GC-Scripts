@@ -7,6 +7,7 @@ import org.powerbot.core.script.job.state.Node;
 import org.powerbot.game.api.methods.interactive.Players;
 import org.powerbot.game.api.methods.node.SceneEntities;
 import org.powerbot.game.api.methods.tab.Inventory;
+import org.powerbot.game.api.util.Timer;
 import org.powerbot.game.api.wrappers.Area;
 import org.powerbot.game.api.wrappers.Tile;
 import org.powerbot.game.api.wrappers.node.SceneObject;
@@ -41,7 +42,9 @@ public class CookBacon extends Node { // This class mines the closest ore
 				// if (oreArea.contains(Players.getLoaded())) {*/
 				GcPowerMiner.logger.log("Found rock with id: " + rock.getId());
 				rock.click(true);
-				Task.sleep(3000, 5000);
+				Task.sleep(1000, 1500);
+				Timer timer = new Timer(5000);
+				while(Players.getLocal().isIdle() && timer.isRunning()) { }
 				// }
 				rockfound = false;
 			} else if (SceneEntities.getNearest(DEPLETED_IRON_ROCKS) != null) {

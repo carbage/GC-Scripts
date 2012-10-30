@@ -14,5 +14,5 @@ public final class Items {
 			7946, // Monkfish
 			15272, // Rocktail
 	};
-
+	
 }
