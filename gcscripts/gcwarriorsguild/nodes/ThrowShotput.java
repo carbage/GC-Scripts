@@ -9,18 +9,18 @@ import org.powerbot.game.api.wrappers.interactive.Player;
 
 public class ThrowShotput extends Node {
 
-	Player player = Players.getLocal();
+    Player player = Players.getLocal();
 
-	private final static int SHOTPUT_PILE_ID = 15665;
+    private final static int SHOTPUT_PILE_ID = 15665;
 
-	@Override
-	public boolean activate() {
-		return Areas.WARRIORS_GUILD_SHOTPUT_AREA.contains(player.getLocation());
-	}
+    @Override
+    public boolean activate() {
+	return Areas.WARRIORS_GUILD_SHOTPUT_AREA.contains(player.getLocation());
+    }
 
-	@Override
-	public void execute() {
-		SceneEntities.getNearest(SHOTPUT_PILE_ID).click(true);
-	}
+    @Override
+    public void execute() {
+	SceneEntities.getNearest(SHOTPUT_PILE_ID).click(true);
+    }
 
 }

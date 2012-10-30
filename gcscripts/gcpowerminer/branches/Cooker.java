@@ -6,13 +6,13 @@ import org.powerbot.game.api.methods.Game;
 
 public class Cooker extends Branch {
 
-	public Cooker(Node[] nodes) {
-		super(nodes);
-	}
+    public Cooker(Node[] nodes) {
+	super(nodes);
+    }
 
-	@Override
-	public boolean branch() {
-		return Game.isLoggedIn();
-	}
+    @Override
+    public boolean branch() {
+	return Game.isLoggedIn();
+    }
 
 }

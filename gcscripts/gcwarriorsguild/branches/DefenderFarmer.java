@@ -8,13 +8,13 @@ import org.powerbot.game.api.methods.Game;
 
 public class DefenderFarmer extends Branch {
 
-	public DefenderFarmer(Node[] nodes) {
-		super(nodes);
-	}
+    public DefenderFarmer(Node[] nodes) {
+	super(nodes);
+    }
 
-	@Override
-	public boolean branch() {
-		return Game.isLoggedIn() && !GcWarriorsGuild.collectingTokens;
-	}
+    @Override
+    public boolean branch() {
+	return Game.isLoggedIn() && !GcWarriorsGuild.collectingTokens;
+    }
 
 }
