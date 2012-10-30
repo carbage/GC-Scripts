@@ -62,7 +62,7 @@ public class SelectorGui extends JFrame {
 					GcWarriorsGuild.defenderType = defenders[defendersBox
 							.getSelectedIndex()];
 					GcWarriorsGuild.guiClosed = true;
-					dispose();
+					setVisible(false);
 				} else {
 					GcWarriorsGuild.guiClosed = true;
 				}
@@ -70,7 +70,9 @@ public class SelectorGui extends JFrame {
 		});
 
 		defendersBox.setEnabled(false);
-		
+
+		setContentPane(contentPane);
+
 		contentPane.add(optionsBox);
 		contentPane.add(defendersBox);
 		contentPane.add(startButton);
