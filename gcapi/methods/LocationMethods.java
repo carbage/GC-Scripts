@@ -11,52 +11,52 @@ import org.powerbot.game.api.wrappers.node.SceneObject;
 
 public final class LocationMethods {
 
-    public static void waitForPlayerToEnterArea(long millis, Area area) { // Waits
-									  // for
-									  // widget
-									  // to
-									  // disappear
-	Timer t = new Timer(millis);
-	while (t.isRunning() && !area.contains(Players.getLocal())) {
+	public static void waitForPlayerToEnterArea(long millis, Area area) { // Waits
+		// for
+		// widget
+		// to
+		// disappear
+		Timer t = new Timer(millis);
+		while (t.isRunning() && !area.contains(Players.getLocal())) {
+		}
 	}
-    }
 
-    public static Area getNpcBox(NPC npc) {
-	return new Area(new Tile(npc.getLocation().getX() + 1, npc
-		.getLocation().getY() + 1, 0), new Tile(npc.getLocation()
-		.getX() - 1, npc.getLocation().getY() - 1, 0));
-    }
-
-    public static Area getObjectBox(SceneObject object) {
-	return new Area(new Tile(object.getLocation().getX() + 1, object
-		.getLocation().getY() + 1, 0), new Tile(object.getLocation()
-		.getX() - 1, object.getLocation().getY() - 1, 0));
-    }
-
-    public static Area get(SceneObject object) {
-	return new Area(new Tile(object.getLocation().getX() + 1, object
-		.getLocation().getY() + 1, 0), new Tile(object.getLocation()
-		.getX() - 1, object.getLocation().getY() - 1, 0));
-    }
-
-    public static void walkToObject(SceneObject object) {
-	Tile objectTile = object.getArea().getCentralTile();
-	Camera.turnTo(object);
-	Walking.walk(LocationMethods.getObjectBox(object).getNearest());
-	if (objectTile.isOnMap() && !object.isOnScreen()) {
-	    objectTile.clickOnMap();
-	} else {
-	    Walking.findPath(objectTile).traverse();
+	public static Area getNpcBox(NPC npc) {
+		return new Area(new Tile(npc.getLocation().getX() + 1, npc
+				.getLocation().getY() + 1, 0), new Tile(npc.getLocation()
+				.getX() - 1, npc.getLocation().getY() - 1, 0));
 	}
-    }
 
-    public static void walkToTile(Tile tile) {
-	Camera.turnTo(tile);
-	if (tile.isOnMap() && !tile.isOnScreen()) {
-	    tile.clickOnMap();
-	} else {
-	    Walking.findPath(tile).traverse();
+	public static Area getObjectBox(SceneObject object) {
+		return new Area(new Tile(object.getLocation().getX() + 1, object
+				.getLocation().getY() + 1, 0), new Tile(object.getLocation()
+				.getX() - 1, object.getLocation().getY() - 1, 0));
 	}
-    }
+
+	public static Area get(SceneObject object) {
+		return new Area(new Tile(object.getLocation().getX() + 1, object
+				.getLocation().getY() + 1, 0), new Tile(object.getLocation()
+				.getX() - 1, object.getLocation().getY() - 1, 0));
+	}
+
+	public static void walkToObject(SceneObject object) {
+		Tile objectTile = object.getArea().getCentralTile();
+		Camera.turnTo(object);
+		Walking.walk(LocationMethods.getObjectBox(object).getNearest());
+		if (objectTile.isOnMap() && !object.isOnScreen()) {
+			objectTile.clickOnMap();
+		} else {
+			if (objectTile.canReach()) Walking.findPath(objectTile).traverse();
+		}
+	}
+
+	public static void walkToTile(Tile tile) {
+		Camera.turnTo(tile);
+		if (tile.isOnMap() && !tile.isOnScreen()) {
+			tile.clickOnMap();
+		} else {
+			if (tile.canReach()) Walking.findPath(tile).traverse();
+		}
+	}
 
 }

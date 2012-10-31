@@ -64,7 +64,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 	public static int initialTokens;
 	public static int tokensGained;
 
-	public static boolean isBanking = false;
+	public static boolean isBanking = true;
 
 	public static boolean hasDefender = false;
 
@@ -86,27 +86,27 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 					selectorGui = new SelectorGui(this);
 					logger.log("Initialised selection GUI.");
 					while (!guiClosed) {
-						Time.sleep(100);
 					}
 					selectorGui.dispose();
 					gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
 					// GUI
 					if (collectingTokens) {
 						provide(new TokenFarmer(
-								new Node[]
-								{ new ThrowShotput() }));
+								new Node[] { new ThrowShotput() }));
 					} else {
 						logger.log("Collecting " + defenderType + " defenders.");
-						if (Inventory.containsOneOf(defenderId - 1)
-								|| Equipment
-										.appearanceContainsOneOf(defenderId - 1)) {
+						if (defenderType.contains("Dragon")) {
+							defenderId++;
+						}
+						if (!Inventory.contains(defenderId - 1)
+								|| !Equipment.containsOneOf(defenderId - 1)) {
+							defenderId--;
 							logger.log("Players.getLocal() does not have any defenders, banking.");
 							isBanking = true;
 							hasDefender = false;
 						}
 						logger.log("Players.getLocal() does have a defender, continuing.");
-						provide(new DefenderFarmer(new Node[]
-						{
+						provide(new DefenderFarmer(new Node[] {
 								new FightCyclopes(), new DefenderCollector() }));
 					}
 					provide(new CheckForFood(), new Walker(), new Banker(),
@@ -191,8 +191,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 								CalculationMethods.perHour(getTokens(),
 										gui.runTime) } };
 			}
-			return new Object[][]
-			{
+			return new Object[][] {
 					{ "Tokens collected:", 0 },
 					{ "Tokens per hour:", 0 } };
 		} else { // Otherwise it's collecting defenders

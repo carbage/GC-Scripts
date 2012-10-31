@@ -6,7 +6,6 @@ import gcapi.methods.LocationMethods;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
 import org.powerbot.core.script.job.state.Node;
-import org.powerbot.game.api.methods.Calculations;
 import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.Walking;
 import org.powerbot.game.api.methods.interactive.Players;
@@ -19,8 +18,7 @@ public class Walker extends Node {
 
 	Player player = Players.getLocal();
 
-	private int[] STAIRCASE_IDS =
-	{ 66795, 66796, 66797 };
+	private int[] STAIRCASE_IDS = { 66795, 66796, 66797 };
 
 	private final static int HEAVY_DOOR_ID = 15658;
 	private final static int SHOTPUT_DOOR_ID = 66758;
@@ -28,21 +26,15 @@ public class Walker extends Node {
 
 	@Override
 	public boolean activate() {
-		return (Players.getLocal().isIdle()
-				&& Game.isLoggedIn()
-				&& !GcWarriorsGuild.isBanking
-				&& (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players
-				.getLocal())
-				|| Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
-						.getLocal())
-				|| Areas.WARRIORS_GUILD_THIRD_FLOOR
-					.contains(Players.getLocal())));
+		System.out.println("Walking or something");
+		if (Players.getLocal().isIdle() && Game.isLoggedIn()
+				&& !GcWarriorsGuild.isBanking) return true;
+		else
+			return false;
 	}
 
 	@Override
 	public void execute() {
-
-		System.out.println("Walking or something");
 
 		SceneObject staircase = SceneEntities.getNearest(STAIRCASE_IDS);
 		if (staircase == null) {
@@ -68,16 +60,9 @@ public class Walker extends Node {
 					GcWarriorsGuild.logger
 							.log("Player is behind heavy door, moving through door.");
 					SceneObject door = SceneEntities.getNearest(HEAVY_DOOR_ID);
-					if (door != null) {
-						if (!door.isOnScreen()) {
-							while (Calculations.distanceTo(door) > 4D) {
-								if (!Players.getLocal().isMoving()) {
-									Walking.findPath(door).traverse();
-								}
-							}
-						}
-						door.click(true);
-					}
+					LocationMethods.walkToObject(door);
+					GenericMethods.waitForCondition(door.isOnScreen(), 10000);
+					if (door.isOnScreen()) door.interact("Open");
 
 				} else if (Players.getLocal().getLocation().getX() > 2852
 						&& Players.getLocal().getPlane() == 2) {
@@ -85,33 +70,25 @@ public class Walker extends Node {
 							.log("Player is behind door to shotput room, moving through door.");
 					SceneObject door = SceneEntities
 							.getNearest(SHOTPUT_DOOR_ID);
-					if (door != null) {
-						if (!door.isOnScreen()) {
-							while (Calculations.distanceTo(door) > 4D) {
-								if (!Players.getLocal().isMoving()) {
-									Walking.findPath(door).traverse();
-								}
-							}
-						}
-						door.click(true);
-					}
-
+					LocationMethods.walkToObject(door);
+					GenericMethods.waitForCondition(door.isOnScreen(), 10000);
+					if (door.isOnScreen()) door.interact("Open");
 				} else if (Areas.WARRIORS_GUILD_SHOTPUT_ROOM.contains(player
 						.getLocation())) {
 					GcWarriorsGuild.logger
 							.log("Player is in the shotput room, continuing to shotput range.");
 					Tile tile = Areas.WARRIORS_GUILD_SHOTPUT_AREA
 							.getCentralTile();
-					if (tile.canReach()) {
-						Walking.findPath(tile).traverse();
-					} else {
+					if (tile.canReach()) Walking.findPath(tile).traverse();
+					else {
 						GcWarriorsGuild.logger
 								.log("Could not reach shotput area, stopping.");
 						GcWarriorsGuild.problemFound = true;
 					}
 				}
 			}
-			if (Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players.getLocal()
+			if (Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players
+					.getLocal()
 					.getLocation())) {
 				GcWarriorsGuild.logger
 						.log("Player is on third floor, moving downstairs.");
@@ -138,19 +115,21 @@ public class Walker extends Node {
 				}
 			}
 		} else {
-			if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal()
+			if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players
+					.getLocal()
 					.getLocation())) {
 
 			}
-			if (Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players.getLocal()
+			if (Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
+					.getLocal()
 					.getLocation())) {
 
 			}
-			if (Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players.getLocal()
+			if (Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players
+					.getLocal()
 					.getLocation())) {
 
 			}
 		}
 	}
-
 }
