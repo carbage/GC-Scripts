@@ -8,13 +8,14 @@ import org.powerbot.game.api.methods.Game;
 
 public class TokenFarmer extends Branch {
 
-    public TokenFarmer(Node[] nodes) {
-	super(nodes);
-    }
+	public TokenFarmer(Node[] nodes) {
+		super(nodes);
+	}
 
-    @Override
-    public boolean branch() {
-	return GcWarriorsGuild.init && Game.isLoggedIn() && GcWarriorsGuild.collectingTokens;
-    }
+	@Override
+	public boolean branch() {
+		return GcWarriorsGuild.init && Game.isLoggedIn()
+				&& GcWarriorsGuild.collectingTokens;
+	}
 
 }
