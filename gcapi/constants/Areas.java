@@ -61,4 +61,8 @@ public final class Areas {
 	    new Tile(3217, 3228, 0), new Tile(3225, 3228, 0),
 	    new Tile(3225, 3222, 0), new Tile(3226, 3220, 0) });
 
+    public static final Area LUMBRIDGE_LODESTONE_AREA = new Area(new Tile[] {
+	    new Tile(3234, 3219, 0), new Tile(3229, 3219, 0),
+	    new Tile(3229, 3224, 0), new Tile(3234, 3224, 0) });
+
 }

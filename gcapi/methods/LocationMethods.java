@@ -1,6 +1,8 @@
 package gcapi.methods;
 
+import org.powerbot.game.api.methods.Walking;
 import org.powerbot.game.api.methods.interactive.Players;
+import org.powerbot.game.api.methods.widget.Camera;
 import org.powerbot.game.api.util.Timer;
 import org.powerbot.game.api.wrappers.Area;
 import org.powerbot.game.api.wrappers.Tile;
@@ -35,6 +37,26 @@ public final class LocationMethods {
 	return new Area(new Tile(object.getLocation().getX() + 1, object
 		.getLocation().getY() + 1, 0), new Tile(object.getLocation()
 		.getX() - 1, object.getLocation().getY() - 1, 0));
+    }
+
+    public static void walkToObject(SceneObject object) {
+	Tile objectTile = object.getArea().getCentralTile();
+	Camera.turnTo(object);
+	Walking.walk(LocationMethods.getObjectBox(object).getNearest());
+	if (objectTile.isOnMap() && !object.isOnScreen()) {
+	    objectTile.clickOnMap();
+	} else {
+	    Walking.findPath(objectTile).traverse();
+	}
+    }
+
+    public static void walkToTile(Tile tile) {
+	Camera.turnTo(tile);
+	if (tile.isOnMap() && !tile.isOnScreen()) {
+	    tile.clickOnMap();
+	} else {
+	    Walking.findPath(tile).traverse();
+	}
     }
 
 }

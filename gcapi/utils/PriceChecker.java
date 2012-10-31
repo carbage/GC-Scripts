@@ -29,7 +29,7 @@ public class PriceChecker {
 	line = line.substring(line.indexOf("mark_price\":\"")
 		+ "mark_price\":\"".length());
 	line = line.substring(0, line.indexOf("\""));
-	return Integer.parseInt(line);
+	return Integer.parseInt(line.replaceAll(",", ""));
     }
 
 }

@@ -1,6 +1,7 @@
 package gcscripts.gcwarriorsguild.nodes;
 
 import gcapi.constants.Areas;
+import gcapi.methods.GenericMethods;
 import gcapi.methods.LocationMethods;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
@@ -30,11 +31,9 @@ public class Walker extends Node {
 	return Players.getLocal().isIdle()
 		&& Game.isLoggedIn()
 		&& !GcWarriorsGuild.isBanking
-		&& (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players
-			.getLocal())
-			|| Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
-				.getLocal()) || Areas.WARRIORS_GUILD_THIRD_FLOOR
-			    .contains(Players.getLocal()));
+		&& (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal())
+			|| Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players.getLocal())
+			|| Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players.getLocal()));
     }
 
     @Override
@@ -54,14 +53,10 @@ public class Walker extends Node {
 		    .getLocation())) {
 		GcWarriorsGuild.logger
 			.log("Player is on first floor, moving upstairs.");
-		if (!staircase.isOnScreen()) {
-		    while (Calculations.distanceTo(staircase) > 4D) {
-			if (!Players.getLocal().isMoving()) {
-			    Walking.findPath(staircase).traverse();
-			}
-		    }
-		}
-		staircase.click(true);
+		LocationMethods.walkToObject(staircase);
+		GenericMethods.waitForCondition(staircase.isOnScreen(), 10000);
+		if (staircase.isOnScreen())
+		    staircase.interact("Climb-up");
 	    }
 	    if (Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players.getLocal()
 		    .getLocation())) {
@@ -110,8 +105,7 @@ public class Walker extends Node {
 		    } else {
 			GcWarriorsGuild.logger
 				.log("Could not reach shotput area, stopping.");
-			GcWarriorsGuild.problemFound = true; // Pretty useless
-							     // tbh
+			GcWarriorsGuild.problemFound = true;
 		    }
 		}
 	    }
@@ -126,24 +120,19 @@ public class Walker extends Node {
 		    SceneObject cyclopsDoor = SceneEntities
 			    .getNearest(CYCLOPS_DOOR_ID);
 		    if (cyclopsDoor != null) {
-			if (!cyclopsDoor.isOnScreen()) {
-			    while (Calculations.distanceTo(cyclopsDoor) > 4D) {
-				if (!Players.getLocal().isMoving()) {
-				    Walking.findPath(cyclopsDoor).traverse();
-				}
-			    }
-			}
-			cyclopsDoor.click(true);
+			LocationMethods.walkToObject(cyclopsDoor);
+			GenericMethods.waitForCondition(cyclopsDoor.isOnScreen(),
+				10000);
+			if (cyclopsDoor.isOnScreen())
+			    cyclopsDoor.interact("Open");
 		    }
+		} else {
+		    LocationMethods.walkToObject(staircase);
+		    GenericMethods.waitForCondition(staircase.isOnScreen(),
+			    10000);
+		    if (staircase.isOnScreen())
+			staircase.interact("Climb-down");
 		}
-		if (!staircase.isOnScreen()) {
-		    while (Calculations.distanceTo(staircase) > 4D) {
-			if (!Players.getLocal().isMoving()) {
-			    Walking.findPath(staircase).traverse();
-			}
-		    }
-		}
-		staircase.click(true);
 	    }
 	} else {
 	    if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal()
