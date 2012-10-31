@@ -34,8 +34,7 @@ public class Banker extends Node {
 	    Bank.open();
 	    if (GcWarriorsGuild.isBanking && GcWarriorsGuild.hasDefender) {
 		if (Inventory.contains(Equipment.DEFENDER_IDS)) {
-		    Inventory.getItem(Equipment.DEFENDER_IDS).getWidgetChild()
-			    .interact("Deposit-all");
+		    Bank.depositInventory();
 		}
 		Item food = Bank.getItem(Items.FOOD_IDS);
 		if (food != null) {

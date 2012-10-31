@@ -164,3 +164,5 @@ pip-log.txt
 
 # Hidden st00f
 gcapi/utils/Trader.java
+gcscripts/ScriptSkeleton.java
+gcscripts/test/*
