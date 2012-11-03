@@ -1,6 +1,7 @@
 package gcscripts.gcwarriorsguild.nodes;
 
 import gcapi.constants.Areas;
+import gcapi.constants.SceneObjects;
 import gcapi.constants.interfaces.Dialogues;
 import gcapi.constants.interfaces.Windows;
 import gcapi.methods.GenericMethods;
@@ -23,10 +24,6 @@ public class Walker extends Node {
 	Player player = Players.getLocal();
 
 	private int[] STAIRCASE_IDS = { 66795, 66796, 66797 };
-
-	private final static int HEAVY_DOOR = 15658;
-	private final static int SHOTPUT_DOOR = 66758;
-	private final static int[] CYCLOPS_DOOR = { 66599, 66601 };
 
 	@Override
 	public boolean activate() {
@@ -62,7 +59,7 @@ public class Walker extends Node {
 
 				case TOP:
 					if (Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(Players.getLocal())) {
-						SceneObject door = SceneEntities.getNearest(CYCLOPS_DOOR);
+						SceneObject door = SceneEntities.getNearest(SceneObjects.CYCLOPS_DOOR);
 						LocationMethods.walkToObject(door);
 						Camera.turnTo(door);
 						GenericMethods.waitForCondition(door.isOnScreen(), 10000);
@@ -104,12 +101,13 @@ public class Walker extends Node {
 					break;
 
 				case TOP:
-					if (!Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(Players.getLocal())) {
-						SceneObject door = SceneEntities.getNearest(CYCLOPS_DOOR);
+					if (!Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(Players.getLocal()) && GcWarriorsGuild.initialTokens < 200) {
+						SceneObject door = SceneEntities.getNearest(SceneObjects.CYCLOPS_DOOR);
 						LocationMethods.walkToObject(door);
 						Camera.turnTo(door);
 						GenericMethods.waitForCondition(door.isOnScreen(), 10000);
 						if (door.isOnScreen()) {
+							GcWarriorsGuild.logger.log("Player is upstairs, moving into cyclops room.");
 							door.interact("Open");
 							GenericMethods.waitForCondition(Widgets.get(Dialogues.DIALOGUE_BOX_PARENT).validate(), 5000);
 							InputMethods.sendKeys(" ");
@@ -129,6 +127,8 @@ public class Walker extends Node {
 							widget = Widgets.get(Windows.WARRIORS_GUILD_CYCLOPES_PARENT).getChild(Windows.WARRIORS_GUILD_CYCLOPES_ACCEPT);
 							widget.click(true);
 						}
+					} else if (GcWarriorsGuild.initialTokens < 200) {
+						GcWarriorsGuild.logger.log("Player does not have enough tokens, stopping.");
 					}
 					break;
 

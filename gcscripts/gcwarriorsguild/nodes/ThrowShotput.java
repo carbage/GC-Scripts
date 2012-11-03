@@ -5,6 +5,7 @@ import gcapi.constants.SceneObjects;
 import gcapi.constants.interfaces.Dialogues;
 import gcapi.methods.GenericMethods;
 import gcapi.methods.InputMethods;
+import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
 import org.powerbot.core.script.job.state.Node;
 import org.powerbot.game.api.methods.Widgets;
@@ -29,6 +30,7 @@ public class ThrowShotput extends Node {
 		} else {
 			if (shotput.isOnScreen()) {
 				shotput.click(true);
+				GcWarriorsGuild.logger.log("Throwing shotput.");
 				GenericMethods.waitForCondition(Widgets.get(Dialogues.THROW_SHOT_DIALOGUE_BOX).validate(), 3000);
 			} else {
 				shotput.getLocation().clickOnMap();

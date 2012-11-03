@@ -133,7 +133,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 		}
 	}
 
-	private int getTokens() {
+	public static int getTokens() {
 		String tokens = Widgets.get(1057, 16).getText();
 		if (tokens != null && tokens.replaceAll(" ", "") != "") {
 			return Integer.parseInt(Widgets.get(Windows.WARRIORS_GUILD_TOKENS_PARENT, Windows.WARRIORS_GUILD_TOKENS_STRENGTH).getText()) - initialTokens;
@@ -216,6 +216,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 			String message = msg.getMessage();
 			if (message.contains("thud.") || message.contains("thump.") || message.contains("floor.") || message.contains("thrown.")) {
 				tokensGained = getTokens();
+				GcWarriorsGuild.logger.log("Gained " + tokensGained + "tokens");
 				gui.updateRows(getData());
 			}
 		}

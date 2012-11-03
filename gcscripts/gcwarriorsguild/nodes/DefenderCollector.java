@@ -26,7 +26,7 @@ public class DefenderCollector extends Node {
 			if (!defender.isOnScreen()) {
 				Camera.turnTo(defender);
 			}
-			if (defender.interact("Take")) {
+			if (defender.interact("Take", "defender")) {
 				GcWarriorsGuild.defendersCollected++;
 			} else {
 				GcWarriorsGuild.logger.log("Defender pick-up timed out after 10 seconds.");
