@@ -102,5 +102,18 @@ public final class Windows {
     public static final int TRADE_INTERFACE_SECOND_PARENT = 334;
     public static final int TRADE_INTERFACE_SECOND_ACCEPT = 21;
     public static final int TRADE_INTERFACE_SECOND_DECLINE = 22;
+    
+    /*
+     * Warriors' Guild interface IDs
+     */
+    public static final int WARRIORS_GUILD_TOKENS_PARENT = 1057;
+    public static final int WARRIORS_GUILD_TOKENS_STRENGTH = 19;
+    
+    public static final int WARRIORS_GUILD_CYCLOPES_PARENT = 1058;
+    public static final int WARRIORS_GUILD_CYCLOPES_SINGLE_TYPE = 36;
+    public static final int WARRIORS_GUILD_CYCLOPES_SINGLE_TYPE_SELECTED_TEXTURE = 4464;
+    public static final int WARRIORS_GUILD_CYCLOPES_STRENGTH_TOKEN = 17;
+	public static final int WARRIORS_GUILD_CYCLOPES_STRENGTH_TOKEN_SELECTED_TEXTURE = 4460;
+	public static final int WARRIORS_GUILD_CYCLOPES_ACCEPT = 31;
 
 }

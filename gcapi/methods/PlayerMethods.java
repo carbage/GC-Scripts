@@ -19,25 +19,27 @@ public final class PlayerMethods {
 			}
 		});
 	}
-	
+
 	public static void waitForPlayerAnimation(Player target, int animationID) { // Waits for target to perform animation
-	    //Timer t = new Timer(millis);
-	    //while (t.isRunning() && target.getAnimation() != animationID) {}
-		while (target.getAnimation() != animationID) {}
+		//Timer t = new Timer(millis);
+		//while (t.isRunning() && target.getAnimation() != animationID) {}
+		while (target.getAnimation() != animationID) {
+		}
 	}
-	
+
 	public static void waitForPlayerToEnterCombat() {
-		while(!Players.getLocal().isInCombat()) { }
+		while (!Players.getLocal().isInCombat()) {
+		}
 	}
-	
+
 	public static void walkPath(final Tile[] tiles) {
 		TilePath path = Walking.newTilePath(tiles);
-		path.randomize(2, 2);		
+		path.randomize(2, 2);
 		while (Players.getLocal().getLocation() != path.getEnd() && Calculations.distanceTo(path.getNext()) < 10) {
 			path.traverse();
 		}
 	}
-	
+
 	public static void walkPathReverse(final Tile[] tiles) {
 		TilePath path = Walking.newTilePath(tiles);
 		path.randomize(2, 2);
@@ -46,17 +48,17 @@ public final class PlayerMethods {
 			path.traverse();
 		}
 	}
-	
+
 	public static void walkPathAndReturn(final Tile[] tiles) {
-		TilePath path = Walking.newTilePath(tiles);		
-		path.randomize(2, 2);		
+		TilePath path = Walking.newTilePath(tiles);
+		path.randomize(2, 2);
 		while (!Players.getLocal().isMoving() && Players.getLocal().getLocation() != path.getEnd()) {
 			path.traverse();
-		}		
-		path.reverse();		
+		}
+		path.reverse();
 		while (!Players.getLocal().isMoving() && Players.getLocal().getLocation() != path.getEnd()) {
 			path.traverse();
-		}		
+		}
 	}
-	
+
 }

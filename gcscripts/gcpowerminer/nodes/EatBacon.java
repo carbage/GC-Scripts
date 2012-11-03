@@ -19,10 +19,14 @@ public class EatBacon extends Node { // This class empties the inventory if full
     public void execute() {
 	CookBacon.isDropping = true;
 	GcPowerMiner.logger.log("Inventory full, dropping.");
+	
+	for(Item i : Inventory.getAllItems(true))
+		i.getWidgetChild().interact("Drop");
+	
 	for (int i = 0; i <= 27; i++) {
 	    Item item = Inventory.getItemAt(i);
 	    if (item != null) {
-		item.getWidgetChild().interact("Drop");
+	    	item.getWidgetChild().interact("Drop");
 	    }
 	}
 	GcPowerMiner.logger.log("Inventory emptied, continuing.");

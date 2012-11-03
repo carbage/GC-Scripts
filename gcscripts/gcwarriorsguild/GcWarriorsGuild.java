@@ -1,8 +1,12 @@
 package gcscripts.gcwarriorsguild;
 
 import gcapi.constants.Areas;
+import gcapi.constants.SceneObjects;
+import gcapi.constants.interfaces.Windows;
 import gcapi.gui.Gui;
 import gcapi.methods.CalculationMethods;
+import gcapi.methods.GenericMethods;
+import gcapi.methods.LocationMethods;
 import gcapi.utils.Antiban;
 import gcapi.utils.Logger;
 import gcscripts.gcwarriorsguild.branches.DefenderFarmer;
@@ -30,23 +34,22 @@ import org.powerbot.game.api.Manifest;
 import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.Widgets;
 import org.powerbot.game.api.methods.interactive.Players;
+import org.powerbot.game.api.methods.node.SceneEntities;
 import org.powerbot.game.api.methods.tab.Equipment;
 import org.powerbot.game.api.methods.tab.Inventory;
 import org.powerbot.game.api.util.Random;
 import org.powerbot.game.api.util.Time;
+import org.powerbot.game.api.wrappers.Area;
 import org.powerbot.game.api.wrappers.Tile;
 
-@Manifest(authors =
-{ "Fuz" }, name = "GC Warrior's Guild", description = "Gathers tokens with shotput/Gathers defenders", version = 1.0)
-public class GcWarriorsGuild extends ActiveScript implements MessageListener,
-		PaintListener {
+@Manifest(authors = { "Fuz" }, name = "GC Warrior's Guild", description = "Gathers tokens with shotput/Gathers defenders", version = 1.0)
+public class GcWarriorsGuild extends ActiveScript implements MessageListener, PaintListener {
 
 	public static Logger logger;
 
 	public static boolean problemFound = false;
 
-	private final List<Node> jobsCollection = Collections
-			.synchronizedList(new ArrayList<Node>());
+	private final List<Node> jobsCollection = Collections.synchronizedList(new ArrayList<Node>());
 	private Tree jobContainer = null;
 
 	public static int defendersCollected = 0;
@@ -64,9 +67,13 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 	public static int initialTokens;
 	public static int tokensGained;
 
-	public static boolean isBanking = true;
+	public static boolean isBanking = false;
 
 	public static boolean hasDefender = false;
+
+	public static enum Floor {
+		GROUND, MIDDLE, TOP;
+	}
 
 	@Override
 	public void onStart() {
@@ -77,45 +84,49 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 			problemFound = true;
 		} else {
 			if (Game.isLoggedIn()) {
-				if (Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players
-						.getLocal())
-						|| Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
-								.getLocal())
-						|| Areas.WARRIORS_GUILD_THIRD_FLOOR.contains(Players
-								.getLocal())) {
-					selectorGui = new SelectorGui(this);
-					logger.log("Initialised selection GUI.");
-					while (!guiClosed) {
-					}
-					selectorGui.dispose();
-					gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
-					// GUI
-					if (collectingTokens) {
-						provide(new TokenFarmer(
-								new Node[] { new ThrowShotput() }));
-					} else {
-						logger.log("Collecting " + defenderType + " defenders.");
-						if (defenderType.contains("Dragon")) {
-							defenderId++;
+				switch (getFloor()) {
+					case GROUND:
+					case MIDDLE:
+					case TOP:
+
+						selectorGui = new SelectorGui(this);
+						logger.log("Initialised selection GUI.");
+						GenericMethods.waitForCondition(guiClosed, 5000);
+						//while (!guiClosed) {
+						//}
+						selectorGui.dispose();
+						gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
+						// GUI
+						if (collectingTokens) {
+							provide(new TokenFarmer(new Node[] {
+									new ThrowShotput(), new CheckForFood(),
+									new Walker(), new Banker() }));
+						} else {
+							logger.log("Collecting " + defenderType + " defenders.");
+							if (defenderType.contains("Dragon")) {
+								defenderId++;
+							}
+							if (!Inventory.containsOneOf(defenderId - 1) || !Equipment.containsOneOf(defenderId - 1)) {
+								logger.log("Players.getLocal() does not have any defenders, banking.");
+								isBanking = true;
+								hasDefender = false;
+							}
+							logger.log("Players.getLocal() does have a defender, continuing.");
+							provide(new DefenderFarmer(new Node[] {
+									new FightCyclopes(),
+									new DefenderCollector(),
+									new CheckForFood(), new Walker(),
+									new Banker(), new Antiban() }));
 						}
-						if (!Inventory.contains(defenderId - 1)
-								|| !Equipment.containsOneOf(defenderId - 1)) {
-							defenderId--;
-							logger.log("Players.getLocal() does not have any defenders, banking.");
-							isBanking = true;
-							hasDefender = false;
-						}
-						logger.log("Players.getLocal() does have a defender, continuing.");
-						provide(new DefenderFarmer(new Node[] {
-								new FightCyclopes(), new DefenderCollector() }));
-					}
-					provide(new CheckForFood(), new Walker(), new Banker(),
-							new Antiban());
-					init = true;
-				} else {
-					logger.log("Player is not in the Warriors' Guild, stopping.");
-					problemFound = true;
+						init = true;
+						break;
+
+					default:
+						logger.log("Player is not in the Warriors' Guild, stopping.");
+						problemFound = true;
+						break;
 				}
+
 			} else {
 				problemFound = true;
 			}
@@ -125,8 +136,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 	private int getTokens() {
 		String tokens = Widgets.get(1057, 16).getText();
 		if (tokens != null && tokens.replaceAll(" ", "") != "") {
-			return Integer.parseInt(Widgets.get(1057, 16).getText())
-					- initialTokens;
+			return Integer.parseInt(Widgets.get(Windows.WARRIORS_GUILD_TOKENS_PARENT, Windows.WARRIORS_GUILD_TOKENS_STRENGTH).getText()) - initialTokens;
 		}
 		return 0;
 	}
@@ -139,12 +149,10 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 		for (final Node job : jobs) {
 			if (!jobsCollection.contains(job)) {
 				jobsCollection.add(job);
-				logger.log("Provided branch/node: "
-						+ job.getClass().getSimpleName());
+				logger.log("Provided branch/node: " + job.getClass().getSimpleName());
 			}
 		}
-		jobContainer = new Tree(jobsCollection.toArray(new Node[jobsCollection
-				.size()])); // Reconstructs the updated tree
+		jobContainer = new Tree(jobsCollection.toArray(new Node[jobsCollection.size()])); // Reconstructs the updated tree
 	}
 
 	@Override
@@ -154,10 +162,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 			Game.logout(true);
 		}
 		if (Game.isLoggedIn() && Players.getLocal() != null) {
-			if ((Areas.WARRIORS_GUILD_FIRST_FLOOR.contains(Players.getLocal())
-					|| Areas.WARRIORS_GUILD_SECOND_FLOOR.contains(Players
-							.getLocal()) || Areas.WARRIORS_GUILD_THIRD_FLOOR
-						.contains(Players.getLocal()))) {
+			if ((Areas.WARRIORS_GUILD_GROUND_FLOOR.contains(Players.getLocal()) || Areas.WARRIORS_GUILD_MIDDLE_FLOOR.contains(Players.getLocal()) || Areas.WARRIORS_GUILD_TOP_FLOOR.contains(Players.getLocal()))) {
 				if (init) {
 					if (gui != null && !gui.isVisible()) gui.setVisible(true);
 
@@ -183,33 +188,25 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 	private Object[][] getData() {
 		if (collectingTokens) { // Checks if collecting tokens
 			if (gui != null) { // Checks if GUI has been initialised
-				return new Object[][]
-				{
+				return new Object[][] {
 						{ "Tokens collected:", getTokens() },
 						{
 								"Tokens per hour:",
-								CalculationMethods.perHour(getTokens(),
-										gui.runTime) } };
+								CalculationMethods.perHour(getTokens(), gui.runTime) } };
 			}
-			return new Object[][] {
-					{ "Tokens collected:", 0 },
+			return new Object[][] { { "Tokens collected:", 0 },
 					{ "Tokens per hour:", 0 } };
 		} else { // Otherwise it's collecting defenders
 			if (gui != null) { // Checks if GUI has been initialised
-				return new Object[][]
-				{
+				return new Object[][] {
 						{ "Defender type:", defenderType },
 						{ "Defenders collected:", defendersCollected },
 						{
 								"Defenders per hour:",
-								CalculationMethods.perHour(
-										(int) defendersCollected, gui.runTime) } };
+								CalculationMethods.perHour((int) defendersCollected, gui.runTime) } };
 			}
-			return new Object[][]
-			{
-					{ "Defender type:", 0 },
-					{ "Defenders collected:", 0 },
-					{ "Defenders per hour:", 0 } };
+			return new Object[][] { { "Defender type:", 0 },
+					{ "Defenders collected:", 0 }, { "Defenders per hour:", 0 } };
 		}
 	}
 
@@ -217,11 +214,9 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 	public void messageReceived(MessageEvent msg) {
 		if (msg.getId() == 109) {
 			String message = msg.getMessage();
-			if (message.contains("thud.") || message.contains("thump.")
-					|| message.contains("floor.")
-					|| message.contains("thrown.")) {
+			if (message.contains("thud.") || message.contains("thump.") || message.contains("floor.") || message.contains("thrown.")) {
 				tokensGained = getTokens();
-				// gui.updateRows(getData());
+				gui.updateRows(getData());
 			}
 		}
 	}
@@ -233,44 +228,40 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 				switch (Players.getLocal().getPlane()) {
 					case 0:
 						g.setColor(Color.WHITE);
-						for (Tile t : Areas.WARRIORS_GUILD_FIRST_FLOOR
-								.getTileArray()) {
+						for (Tile t : Areas.WARRIORS_GUILD_GROUND_FLOOR.getTileArray()) {
 							t.draw(g);
 						}
 						g.setColor(Color.GREEN);
-						for (Tile t : Areas.WARRIORS_GUILD_BANK_AREA
-								.getTileArray()) {
+						for (Tile t : Areas.WARRIORS_GUILD_BANK_AREA.getTileArray()) {
 							t.draw(g);
 						}
 						break;
 
 					case 1:
 						g.setColor(Color.WHITE);
-						for (Tile t : Areas.WARRIORS_GUILD_SECOND_FLOOR
-								.getTileArray()) {
+						for (Tile t : Areas.WARRIORS_GUILD_MIDDLE_FLOOR.getTileArray()) {
 							t.draw(g);
 						}
 						g.setColor(Color.BLUE);
-						for (Tile t : Areas.WARRIORS_GUILD_SHOTPUT_ROOM
-								.getTileArray()) {
+						for (Tile t : Areas.WARRIORS_GUILD_SHOTPUT_ROOM.getTileArray()) {
 							t.draw(g);
 						}
 						g.setColor(Color.YELLOW);
-						for (Tile t : Areas.WARRIORS_GUILD_SHOTPUT_AREA
-								.getTileArray()) {
-							t.draw(g);
+						Area shotput = SceneEntities.getNearest(SceneObjects.SHOTPUT_PILE_ID).getArea();
+						if (shotput != null) {
+							for (Tile t : shotput.getTileArray()) {
+								t.draw(g);
+							}
+							break;
 						}
-						break;
 
 					case 2:
 						g.setColor(Color.WHITE);
-						for (Tile t : Areas.WARRIORS_GUILD_THIRD_FLOOR
-								.getTileArray()) {
+						for (Tile t : Areas.WARRIORS_GUILD_TOP_FLOOR.getTileArray()) {
 							t.draw(g);
 						}
 						g.setColor(Color.RED);
-						for (Tile t : Areas.WARRIORS_GUILD_CYCLOPS_AREA
-								.getTileArray()) {
+						for (Tile t : Areas.WARRIORS_GUILD_CYCLOPS_AREA.getTileArray()) {
 							t.draw(g);
 						}
 						break;
@@ -286,5 +277,17 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener,
 		if (selectorGui != null) selectorGui.dispose();
 		if (gui != null) gui.dispose();
 		guiClosed = true;
+	}
+
+	public static Floor getFloor() {
+		if (LocationMethods.isInArea(Areas.WARRIORS_GUILD_GROUND_FLOOR)) {
+			return Floor.GROUND;
+		} else if (LocationMethods.isInArea(Areas.WARRIORS_GUILD_MIDDLE_FLOOR)) {
+			return Floor.MIDDLE;
+		} else if (LocationMethods.isInArea(Areas.WARRIORS_GUILD_TOP_FLOOR)) {
+			return Floor.TOP;
+		} else {
+			return null;
+		}
 	}
 }

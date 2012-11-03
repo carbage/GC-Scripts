@@ -1,11 +1,13 @@
 package gcscripts.gcwarriorsguild.nodes;
 
+import gcapi.constants.Equipment;
+import gcapi.methods.GenericMethods;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
 import org.powerbot.core.script.job.state.Node;
 import org.powerbot.game.api.methods.node.GroundItems;
 import org.powerbot.game.api.methods.tab.Inventory;
-import org.powerbot.game.api.util.Timer;
+import org.powerbot.game.api.methods.widget.Camera;
 import org.powerbot.game.api.wrappers.node.GroundItem;
 
 public class DefenderCollector extends Node {
@@ -19,25 +21,20 @@ public class DefenderCollector extends Node {
 
 	@Override
 	public void execute() {
-		GroundItem defender = GroundItems
-				.getNearest(GcWarriorsGuild.defenderId);
+		GroundItem defender = GroundItems.getNearest(Equipment.DEFENDER_IDS);
 		if (defender != null) {
-			defenderCount = Inventory.getCount(GcWarriorsGuild.defenderId);
-			defender.interact("Pick up");
-			Timer timer = new Timer(10000);
-			while (defenderCount == Inventory
-					.getCount(GcWarriorsGuild.defenderId) && timer.isRunning()) {
+			if (!defender.isOnScreen()) {
+				Camera.turnTo(defender);
 			}
-			if (!timer.isRunning()
-					&& defenderCount == Inventory
-							.getCount(GcWarriorsGuild.defenderId)) {
-				GcWarriorsGuild.logger
-						.log("Defender pick-up timed out after 10 seconds stopping.");
-				GcWarriorsGuild.problemFound = true;
-			} else {
+			if (defender.interact("Take")) {
 				GcWarriorsGuild.defendersCollected++;
+			} else {
+				GcWarriorsGuild.logger.log("Defender pick-up timed out after 10 seconds.");
 			}
 		}
 	}
 
+	public int getDefenderCount() {
+		return defenderCount;
+	}
 }

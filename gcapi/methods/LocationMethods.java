@@ -22,25 +22,19 @@ public final class LocationMethods {
 	}
 
 	public static Area getNpcBox(NPC npc) {
-		return new Area(new Tile(npc.getLocation().getX() + 1, npc
-				.getLocation().getY() + 1, 0), new Tile(npc.getLocation()
-				.getX() - 1, npc.getLocation().getY() - 1, 0));
+		return new Area(new Tile(npc.getLocation().getX() + 1, npc.getLocation().getY() + 1, 0), new Tile(npc.getLocation().getX() - 1, npc.getLocation().getY() - 1, 0));
 	}
 
 	public static Area getObjectBox(SceneObject object) {
-		return new Area(new Tile(object.getLocation().getX() + 1, object
-				.getLocation().getY() + 1, 0), new Tile(object.getLocation()
-				.getX() - 1, object.getLocation().getY() - 1, 0));
+		return new Area(new Tile(object.getLocation().getX() + 1, object.getLocation().getY() + 1, 0), new Tile(object.getLocation().getX() - 1, object.getLocation().getY() - 1, 0));
 	}
 
 	public static Area get(SceneObject object) {
-		return new Area(new Tile(object.getLocation().getX() + 1, object
-				.getLocation().getY() + 1, 0), new Tile(object.getLocation()
-				.getX() - 1, object.getLocation().getY() - 1, 0));
+		return new Area(new Tile(object.getLocation().getX() + 1, object.getLocation().getY() + 1, 0), new Tile(object.getLocation().getX() - 1, object.getLocation().getY() - 1, 0));
 	}
 
 	public static void walkToObject(SceneObject object) {
-		Tile objectTile = object.getArea().getCentralTile();
+		Tile objectTile = object.getLocation();
 		Camera.turnTo(object);
 		Walking.walk(LocationMethods.getObjectBox(object).getNearest());
 		if (objectTile.isOnMap() && !object.isOnScreen()) {
@@ -57,6 +51,11 @@ public final class LocationMethods {
 		} else {
 			if (tile.canReach()) Walking.findPath(tile).traverse();
 		}
+	}
+
+	public static boolean isInArea(Area area) {
+		if (area.contains(Players.getLocal())) return true;
+		return false;
 	}
 
 }

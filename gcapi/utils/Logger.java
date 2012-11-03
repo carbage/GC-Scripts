@@ -25,13 +25,11 @@ public class Logger {
 		System.out.println("Saving logs to: " + logDir);
 
 		if (!new File(logDir).exists()) {
-			System.out.println(logDir
-					+ " does not exist, creating directories.");
+			System.out.println(logDir + " does not exist, creating directories.");
 			new File(logDir).mkdirs();
 		}
 
-		String logFile = logDir + "log-" + Environment.getDisplayName() + "-"
-				+ source.getClass().getSimpleName() + ".txt";
+		String logFile = logDir + "log-" + Environment.getDisplayName() + "-" + source.getClass().getSimpleName() + ".txt";
 
 		try {
 			file = new File(logFile);
@@ -44,11 +42,9 @@ public class Logger {
 
 			this.out = new BufferedWriter(new FileWriter(file, true));
 
-			System.out.println("Started logging " + logFile + " at "
-					+ format.format(currentDate));
+			System.out.println("Started logging " + logFile + " at " + format.format(currentDate));
 
-			this.out.append("[ Log opened at " + format.format(currentDate)
-					+ ". ]\n");
+			this.out.append("[ Log opened at " + format.format(currentDate) + ". ]\n");
 			this.out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -60,8 +56,7 @@ public class Logger {
 			try {
 				Date currentDate = new Date();
 				SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
-				String log = "[" + format.format(currentDate) + "] " + str
-						+ "\n";
+				String log = "[" + format.format(currentDate) + "] " + str + "\n";
 				System.out.print(log);
 				this.out.append(log);
 				this.out.flush();
@@ -70,15 +65,15 @@ public class Logger {
 			}
 		}
 	}
-	
+
 	public void close() {
-		if(this.out != null) {
+		if (this.out != null) {
 			try {
 				this.out.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}			
+			}
 		}
 	}
 

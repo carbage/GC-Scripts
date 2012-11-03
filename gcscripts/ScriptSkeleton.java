@@ -23,8 +23,7 @@ public class ScriptSkeleton extends ActiveScript {
 
 	public static boolean problemFound = false;
 
-	private final List<Node> jobsCollection = Collections
-			.synchronizedList(new ArrayList<Node>());
+	private final List<Node> jobsCollection = Collections.synchronizedList(new ArrayList<Node>());
 	private Tree jobContainer = null;
 
 	private static Gui gui;
@@ -45,8 +44,7 @@ public class ScriptSkeleton extends ActiveScript {
 				logger.log("Provided node: " + job.getClass().getSimpleName());
 			}
 		}
-		jobContainer = new Tree(jobsCollection.toArray(new Node[jobsCollection
-				.size()])); // Reconstructs the updated tree
+		jobContainer = new Tree(jobsCollection.toArray(new Node[jobsCollection.size()])); // Reconstructs the updated tree
 	}
 
 	public synchronized final void revoke(final Node... jobs) {
@@ -56,8 +54,7 @@ public class ScriptSkeleton extends ActiveScript {
 				logger.log("Revoked node: " + job.getClass().getSimpleName());
 			}
 		}
-		jobContainer = new Tree(jobsCollection.toArray(new Node[jobsCollection
-				.size()])); // Reconstructs the updated tree
+		jobContainer = new Tree(jobsCollection.toArray(new Node[jobsCollection.size()])); // Reconstructs the updated tree
 	}
 
 	public final void submit(final Job... jobs) {
@@ -74,8 +71,7 @@ public class ScriptSkeleton extends ActiveScript {
 			Game.logout(true);
 		}
 
-		if (gui != null && !gui.isVisible())
-			gui.setVisible(true);
+		if (gui != null && !gui.isVisible()) gui.setVisible(true);
 
 		if (jobContainer != null) {
 			final Node job = jobContainer.state();
@@ -89,7 +85,7 @@ public class ScriptSkeleton extends ActiveScript {
 			public void run() {
 				if (getData() != null && gui != null) // Why bother updating on
 														// loop? Waste of CPU
-					gui.updateRows(getData());
+				gui.updateRows(getData());
 			}
 		};
 
@@ -107,6 +103,6 @@ public class ScriptSkeleton extends ActiveScript {
 	public void onStop() {
 		logger.log("Script stopped.");
 		logger.close();
-		if(gui != null) gui.dispose();
+		if (gui != null) gui.dispose();
 	}
 }
