@@ -30,9 +30,9 @@ public class SelectorGui extends JFrame {
 			"Steel", "Black", "Mithril", "Adamant", "Rune", "Dragon" };
 
 	public SelectorGui(Logger logger) {
-		this.logger = logger;
+		//this.logger = logger;
 		
-		this.logger.log("Initialised selection GUI");
+		//this.logger.log("Initialised selection GUI");
 
 		setTitle("GC Warriors' Guild - Select action");
 		setPreferredSize(new Dimension(200, 100));
