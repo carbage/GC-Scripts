@@ -1,7 +1,7 @@
 package gcscripts.gcwarriorsguild.nodes;
 
 import gcapi.constants.Equipment;
-import gcapi.methods.GenericMethods;
+import gcapi.constants.Items;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
 import org.powerbot.core.script.job.state.Node;
@@ -23,13 +23,21 @@ public class DefenderCollector extends Node {
 	public void execute() {
 		GroundItem defender = GroundItems.getNearest(Equipment.DEFENDER_IDS);
 		if (defender != null) {
+			GcWarriorsGuild.logger.log("Found defender on floor");
+			if (Inventory.contains(Items.FOOD_IDS) && Inventory.isFull()) {
+				Inventory.getItem(Items.FOOD_IDS).getWidgetChild().click(true);
+				GcWarriorsGuild.logger.log("Inventory full, making space for defender");
+			} else if (Inventory.isFull()) {
+				GcWarriorsGuild.isBanking = true;
+			}
 			if (!defender.isOnScreen()) {
 				Camera.turnTo(defender);
 			}
 			if (defender.interact("Take", "defender")) {
 				GcWarriorsGuild.defendersCollected++;
+				GcWarriorsGuild.logger.log("Defender collected");
 			} else {
-				GcWarriorsGuild.logger.log("Defender pick-up timed out after 10 seconds.");
+				GcWarriorsGuild.logger.log("Failed to pick up defender.");
 			}
 		}
 	}

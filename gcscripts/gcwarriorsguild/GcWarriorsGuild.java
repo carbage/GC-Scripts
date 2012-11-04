@@ -38,11 +38,10 @@ import org.powerbot.game.api.methods.node.SceneEntities;
 import org.powerbot.game.api.methods.tab.Equipment;
 import org.powerbot.game.api.methods.tab.Inventory;
 import org.powerbot.game.api.util.Random;
-import org.powerbot.game.api.util.Time;
 import org.powerbot.game.api.wrappers.Area;
 import org.powerbot.game.api.wrappers.Tile;
 
-@Manifest(authors = { "Fuz" }, name = "GC Warrior's Guild", description = "Gathers tokens with shotput/Gathers defenders", version = 1.0)
+@Manifest(authors = { "Fuz" }, name = "GC Warriors' Guild", description = "Gathers tokens with shotput/Gathers defenders", version = 1.0)
 public class GcWarriorsGuild extends ActiveScript implements MessageListener, PaintListener {
 
 	public static Logger logger;
@@ -98,20 +97,33 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 						gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
 						// GUI
 						if (collectingTokens) {
+							int[] EQUIPMENT_HAND_SLOT_IDS = {};
+							for (int i : EQUIPMENT_HAND_SLOT_IDS) {
+								if (Equipment.getItem(i) != null) {
+									if (!Inventory.isFull()) {
+										Equipment.unequip(Equipment.getItems()[i].getId());
+									} else {
+										logger.log("Player does not have room to unequip hand items, stopping.");
+										problemFound = true;
+									}
+								}
+							}
+							hasDefender = true;
 							provide(new TokenFarmer(new Node[] {
 									new ThrowShotput(), new CheckForFood(),
 									new Walker(), new Banker() }));
 						} else {
 							logger.log("Collecting " + defenderType + " defenders.");
-							if (defenderType.contains("Dragon")) {
+							if (defenderType.contains("ragon")) {
 								defenderId++;
 							}
-							if (!Inventory.containsOneOf(defenderId - 1) || !Equipment.containsOneOf(defenderId - 1)) {
-								logger.log("Players.getLocal() does not have any defenders, banking.");
+							if (!Inventory.containsOneOf(defenderId - 1) && !Equipment.containsOneOf(defenderId - 1)) {
+								logger.log("Player does not have any defenders, banking.");
 								isBanking = true;
 								hasDefender = false;
+							} else {
+								logger.log("Player does have a defender, continuing.");
 							}
-							logger.log("Players.getLocal() does have a defender, continuing.");
 							provide(new DefenderFarmer(new Node[] {
 									new FightCyclopes(),
 									new DefenderCollector(),
@@ -220,7 +232,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 				gui.updateRows(getData());
 			}
 		}
-	}
+	};
 
 	@Override
 	public void onRepaint(Graphics g) {

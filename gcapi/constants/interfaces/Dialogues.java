@@ -2,7 +2,8 @@ package gcapi.constants.interfaces;
 
 public final class Dialogues {
 
-	public static final int DIALOGUE_BOX_PARENT = 1188;
+	public static final int DIALOGUE_BOX_PARENT = 1184;
+	public static final int DIALOGUE_BOX_NEXT = 19;
 
 	public static final int THROW_SHOT_DIALOGUE_BOX = 1188;
 

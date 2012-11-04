@@ -23,8 +23,8 @@ public final class Areas {
 			new Tile(2709, 3729, 0), new Tile(2705, 3727, 0) });
 
 	public static final Area WARRIORS_GUILD_BANK_AREA = new Area(new Tile[] {
-			new Tile(2843, 3536, 0), new Tile(2844, 3539, 0),
-			new Tile(2843, 3539, 0), new Tile(2844, 3539, 0) });
+			new Tile(2843, 3533, 0), new Tile(2843, 3540, 0),
+			new Tile(2848, 3540, 0), new Tile(2848, 3533, 0) });
 
 	public static final Area WARRIORS_GUILD_GROUND_FLOOR = new Area(new Tile[] {
 			new Tile(2836, 3553, 0), new Tile(2877, 3553, 0),

@@ -33,7 +33,6 @@ public class ThrowShotput extends Node {
 				GcWarriorsGuild.logger.log("Throwing shotput.");
 				GenericMethods.waitForCondition(Widgets.get(Dialogues.THROW_SHOT_DIALOGUE_BOX).validate(), 3000);
 			} else {
-				shotput.getLocation().clickOnMap();
 				Camera.turnTo(shotput);
 			}
 		}
