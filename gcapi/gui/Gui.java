@@ -61,14 +61,6 @@ public class Gui extends JFrame {
 	@SuppressWarnings("serial")
 	public Gui(String scriptName, Logger logger, Object[][] data, ActiveScript parent) {
 
-		for (Frame frame : JFrame.getFrames()) {
-			if (frame.getClass().getName().contains("powerbot")) {
-				System.out.println("Current frame title: " + frame.getTitle());
-				frame.setTitle("Powerbot - " + scriptName);
-				break;
-			}
-		}
-
 		this.logger = logger;
 		logger.log("Initialised stats GUI.");
 

@@ -250,7 +250,8 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 		if (collectingTokens) { // Checks if collecting tokens
 			if (gui != null) { // Checks if GUI has been initialised
 				return new Object[][] {
-						{ "Tokens collected:", getTokens() },
+						{ "Tokens collected:",
+								String.format("%,d", getTokens()) },
 						{
 								"Tokens per hour:",
 								CalculationMethods.perHour(getTokens(), gui.runTime) } };

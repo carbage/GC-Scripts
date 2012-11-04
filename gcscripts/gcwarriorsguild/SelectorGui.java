@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -52,7 +53,7 @@ public class SelectorGui extends JFrame {
 		JButton startButton = new JButton("Start script");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+				dispatchEvent(new WindowEvent(SelectorGui.this, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 
@@ -62,7 +63,7 @@ public class SelectorGui extends JFrame {
 
 		contentPane.add(optionsBox);
 		contentPane.add(defendersBox);
-		//contentPane.add(startButton);
+		contentPane.add(startButton);
 		pack();
 		setVisible(true);
 
