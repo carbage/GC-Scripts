@@ -64,7 +64,7 @@ public class Gui extends JFrame {
 		for (Frame frame : JFrame.getFrames()) {
 			if (frame.getClass().getName().contains("powerbot")) {
 				System.out.println("Current frame title: " + frame.getTitle());
-				frame.setTitle("Powerbot .:GC Scripts - " + scriptName + ":.");
+				frame.setTitle("Powerbot - " + scriptName);
 				break;
 			}
 		}

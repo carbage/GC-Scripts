@@ -20,10 +20,21 @@ import gcscripts.gcwarriorsguild.nodes.Walker;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import org.powerbot.core.bot.Bot;
 import org.powerbot.core.event.events.MessageEvent;
 import org.powerbot.core.event.listeners.MessageListener;
 import org.powerbot.core.event.listeners.PaintListener;
@@ -40,11 +51,12 @@ import org.powerbot.game.api.methods.tab.Inventory;
 import org.powerbot.game.api.util.Random;
 import org.powerbot.game.api.wrappers.Area;
 import org.powerbot.game.api.wrappers.Tile;
+import org.powerbot.game.bot.Context;
 
 @Manifest(authors = { "Fuz" }, name = "GC Warriors' Guild", description = "Gathers tokens with shotput/Gathers defenders", version = 1.0)
 public class GcWarriorsGuild extends ActiveScript implements MessageListener, PaintListener {
 
-	public static Logger logger;
+	public static Logger logger = new Logger(GcWarriorsGuild.class);
 
 	public static boolean problemFound = false;
 
@@ -75,8 +87,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	}
 
 	@Override
-	public void onStart() {
-		logger = new Logger(this); // Initialises the logger
+	public void onStart() {// Initialises the logger
 		logger.log("Started script.");
 		initialTokens = getTokens();
 		if (Players.getLocal() == null) {
@@ -87,17 +98,55 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 					case GROUND:
 					case MIDDLE:
 					case TOP:
-
-						selectorGui = new SelectorGui(this);
+						final ReentrantLock lock = new ReentrantLock();
+						final Condition condition = lock.newCondition();
+						final SelectorGui frame = new SelectorGui();
 						logger.log("Initialised selection GUI.");
-						GenericMethods.waitForCondition(guiClosed, 5000);
-						//while (!guiClosed) {
-						//}
-						selectorGui.dispose();
+						Thread t = new Thread() {
+							public void run() {
+								synchronized (lock) {
+									while (frame.isVisible())
+										try {
+											lock.wait();
+										} catch (InterruptedException e) {
+											e.printStackTrace();
+										}
+								}
+							}
+						};
+						t.start();
+
+						frame.addWindowListener(new WindowAdapter() {
+
+							@Override
+							public void windowClosing(WindowEvent arg0) {
+								synchronized (lock) {
+									if (frame.getOptionsBox().getSelectedIndex() == 1) {
+										collectingTokens = false;
+										defenderId = gcapi.constants.Equipment.DEFENDER_IDS[((JComboBox) frame.getDefendersBox()).getSelectedIndex()];
+										GcWarriorsGuild.defenderType = ((SelectorGui) frame).getDefenders()[((JComboBox) ((SelectorGui) frame).getDefendersBox()).getSelectedIndex()];
+									} else {
+										collectingTokens = true;
+									}
+									frame.setVisible(false);
+									lock.notify();
+								}
+							}
+
+						});
+
+						try {
+							t.join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 						gui = new Gui("GC Warriors' Guild", logger, getData(), this); // Initialises
 						// GUI
 						if (collectingTokens) {
-							int[] EQUIPMENT_HAND_SLOT_IDS = {};
+							gcapi.constants.Equipment equipment = new gcapi.constants.Equipment();
+							int[] EQUIPMENT_HAND_SLOT_IDS = {
+									equipment.WEAPON_SLOT,
+									equipment.GLOVE_SLOT, equipment.SHIELD_SLOT };
 							for (int i : EQUIPMENT_HAND_SLOT_IDS) {
 								if (Equipment.getItem(i) != null) {
 									if (!Inventory.isFull()) {
@@ -173,7 +222,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 			this.stop();
 			Game.logout(true);
 		}
-		if (Game.isLoggedIn() && Players.getLocal() != null) {
+		if (Game.isLoggedIn()) {
 			if ((Areas.WARRIORS_GUILD_GROUND_FLOOR.contains(Players.getLocal()) || Areas.WARRIORS_GUILD_MIDDLE_FLOOR.contains(Players.getLocal()) || Areas.WARRIORS_GUILD_TOP_FLOOR.contains(Players.getLocal()))) {
 				if (init) {
 					if (gui != null && !gui.isVisible()) gui.setVisible(true);
@@ -224,11 +273,10 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 
 	@Override
 	public void messageReceived(MessageEvent msg) {
-		if (msg.getId() == 109) {
+		if (msg.getId() == 0) {
 			String message = msg.getMessage();
 			if (message.contains("thud.") || message.contains("thump.") || message.contains("floor.") || message.contains("thrown.")) {
 				tokensGained = getTokens();
-				GcWarriorsGuild.logger.log("Gained " + tokensGained + "tokens");
 				gui.updateRows(getData());
 			}
 		}

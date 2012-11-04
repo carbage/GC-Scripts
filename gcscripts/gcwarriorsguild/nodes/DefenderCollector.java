@@ -8,6 +8,7 @@ import org.powerbot.core.script.job.state.Node;
 import org.powerbot.game.api.methods.node.GroundItems;
 import org.powerbot.game.api.methods.tab.Inventory;
 import org.powerbot.game.api.methods.widget.Camera;
+import org.powerbot.game.api.util.Time;
 import org.powerbot.game.api.wrappers.node.GroundItem;
 
 public class DefenderCollector extends Node {
@@ -36,8 +37,7 @@ public class DefenderCollector extends Node {
 			if (defender.interact("Take", "defender")) {
 				GcWarriorsGuild.defendersCollected++;
 				GcWarriorsGuild.logger.log("Defender collected");
-			} else {
-				GcWarriorsGuild.logger.log("Failed to pick up defender.");
+				Time.sleep(1000);
 			}
 		}
 	}

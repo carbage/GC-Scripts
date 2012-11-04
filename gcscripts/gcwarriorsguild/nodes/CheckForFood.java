@@ -16,6 +16,7 @@ public class CheckForFood extends Node {
 
 	@Override
 	public void execute() {
+
 		if (Players.getLocal().getHpPercent() < 45) {
 			if (!Inventory.contains(Items.FOOD_IDS)) {
 				GcWarriorsGuild.isBanking = true;

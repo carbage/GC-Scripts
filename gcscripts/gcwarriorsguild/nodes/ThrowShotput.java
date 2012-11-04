@@ -30,7 +30,6 @@ public class ThrowShotput extends Node {
 		} else {
 			if (shotput.isOnScreen()) {
 				shotput.click(true);
-				GcWarriorsGuild.logger.log("Throwing shotput.");
 				GenericMethods.waitForCondition(Widgets.get(Dialogues.THROW_SHOT_DIALOGUE_BOX).validate(), 3000);
 			} else {
 				Camera.turnTo(shotput);

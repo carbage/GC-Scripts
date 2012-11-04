@@ -107,7 +107,7 @@ public final class Windows {
      * Warriors' Guild interface IDs
      */
     public static final int WARRIORS_GUILD_TOKENS_PARENT = 1057;
-    public static final int WARRIORS_GUILD_TOKENS_STRENGTH = 19;
+    public static final int WARRIORS_GUILD_TOKENS_STRENGTH = 16;
     
     public static final int WARRIORS_GUILD_CYCLOPES_PARENT = 1058;
     public static final int WARRIORS_GUILD_CYCLOPES_SINGLE_TYPE = 36;
