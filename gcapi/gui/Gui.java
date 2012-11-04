@@ -62,7 +62,7 @@ public class Gui extends JFrame {
 	public Gui(String scriptName, Logger logger, Object[][] data, ActiveScript parent) {
 
 		this.logger = logger;
-		logger.log("Initialised stats GUI.");
+		logger.log("Initialised selection GUI.");
 
 		this.parent = parent;
 

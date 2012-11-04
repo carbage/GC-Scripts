@@ -1,5 +1,7 @@
 package gcscripts.gcwarriorsguild;
 
+import gcapi.utils.Logger;
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -19,13 +21,18 @@ public class SelectorGui extends JFrame {
 
 	private final int PADDING = 10;
 
+	private Logger logger;
+
 	private static final String[] OPTIONS = new String[] { "Collect tokens",
 			"Collect defenders" };
 
 	private static final String[] DEFENDERS = new String[] { "Bronze", "Iron",
 			"Steel", "Black", "Mithril", "Adamant", "Rune", "Dragon" };
 
-	public SelectorGui() {
+	public SelectorGui(Logger logger) {
+		this.logger = logger;
+		
+		this.logger.log("Initialised selection GUI");
 
 		setTitle("GC Warriors' Guild - Select action");
 		setPreferredSize(new Dimension(200, 100));

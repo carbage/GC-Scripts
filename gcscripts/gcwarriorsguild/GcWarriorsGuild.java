@@ -88,6 +88,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 
 	@Override
 	public void onStart() {// Initialises the logger
+		logger = new Logger(this);
 		logger.log("Started script.");
 		initialTokens = getTokens();
 		if (Players.getLocal() == null) {
@@ -100,8 +101,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 					case TOP:
 						final ReentrantLock lock = new ReentrantLock();
 						final Condition condition = lock.newCondition();
-						final SelectorGui frame = new SelectorGui();
-						logger.log("Initialised selection GUI.");
+						final SelectorGui frame = new SelectorGui(this.logger);
 						Thread t = new Thread() {
 							public void run() {
 								synchronized (lock) {
