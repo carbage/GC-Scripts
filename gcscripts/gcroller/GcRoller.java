@@ -21,7 +21,6 @@ public class GcRoller extends ActiveScript implements MessageListener {
 	private boolean winRoll = false;
 	private boolean loseRoll = false;
 	private String sender = "";
-	private String ownerName = "Autorune";
 	private int playerWinMin = 55;
 	private int maximum = 100;
 	private int minimum = 0;
@@ -35,11 +34,11 @@ public class GcRoller extends ActiveScript implements MessageListener {
 				doRoll(randomNumber(playerWinMin, 100));
 			} else {
 				switch (randomNumber(1, 15)) {
-				case 1:
-					roll = randomNumber(1, playerWinMin);
-					break;
-				default:
-					doRoll(randomNumber(minimum, maximum));
+					case 1:
+						roll = randomNumber(1, playerWinMin);
+						break;
+					default:
+						doRoll(randomNumber(minimum, maximum));
 				}
 			}
 
@@ -73,36 +72,10 @@ public class GcRoller extends ActiveScript implements MessageListener {
 		String msg = Message.getMessage();
 		int index = Message.getId();
 		sender = Message.getSender();
-		if ((msg.startsWith("!Roll") || msg.startsWith("!Dice")) && index == 9
-				&& !sendRoll) {
-			System.out.println(sender + " sent roll request. Auto-win = "
-					+ winRoll + " and auto-lose = " + loseRoll + ".");
+		if ((msg.startsWith("!Roll") || msg.startsWith("!Dice")) && index == 9 && !sendRoll) {
+			System.out.println(sender + " sent roll request.");
 			sendRoll = true;
 
-		}
-
-		if (msg.startsWith("!Winroll") && index == 3
-				&& cleanUsername(sender).equals(ownerName)) {
-			System.out.println("Auto-win triggered. :D");
-			loseRoll = false;
-			winRoll = true;
-		}
-
-		if (msg.startsWith("!Loseroll") && index == 3
-				&& cleanUsername(sender).equals(ownerName)) {
-			System.out.println("Auto-lose triggered. :D");
-			winRoll = false;
-			loseRoll = true;
-		}
-
-		if (msg.startsWith("loldongs")) {
-			String[] baws = new String[] { "Autorune", "SI1m Sh4dy",
-					"GC On Loop" };
-			for (String s : baws) {
-				if (cleanUsername(sender).equals(s)) {
-					winRoll = true;
-				}
-			}
 		}
 	}
 

@@ -5,13 +5,13 @@ import gcapi.constants.SceneObjects;
 import gcapi.constants.interfaces.Dialogues;
 import gcapi.methods.GenericMethods;
 import gcapi.methods.InputMethods;
-import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
 import org.powerbot.core.script.job.state.Node;
 import org.powerbot.game.api.methods.Widgets;
 import org.powerbot.game.api.methods.interactive.Players;
 import org.powerbot.game.api.methods.node.SceneEntities;
 import org.powerbot.game.api.methods.widget.Camera;
+import org.powerbot.game.api.util.Time;
 import org.powerbot.game.api.wrappers.node.SceneObject;
 
 public class ThrowShotput extends Node {
@@ -26,6 +26,7 @@ public class ThrowShotput extends Node {
 		SceneObject shotput = SceneEntities.getNearest(SceneObjects.SHOTPUT_PILE_ID);
 		if (Widgets.get(Dialogues.THROW_SHOT_DIALOGUE_BOX).validate()) {
 			InputMethods.sendKeys(Integer.toString(3));
+			Time.sleep(5000);
 			GenericMethods.waitForCondition(Players.getLocal().isIdle(), 10000);
 		} else {
 			if (shotput.isOnScreen()) {

@@ -19,7 +19,7 @@ public class SelectorGui extends JFrame {
 
 	private JComboBox defendersBox;
 
-	private final int PADDING = 10;
+	private static final int PADDING = 10;
 
 	private Logger logger;
 
@@ -29,16 +29,15 @@ public class SelectorGui extends JFrame {
 	private static final String[] DEFENDERS = new String[] { "Bronze", "Iron",
 			"Steel", "Black", "Mithril", "Adamant", "Rune", "Dragon" };
 
-	public SelectorGui(Logger logger) {
+	public SelectorGui() {
 		//this.logger = logger;
-		
+
 		//this.logger.log("Initialised selection GUI");
 
 		setTitle("GC Warriors' Guild - Select action");
 		setPreferredSize(new Dimension(200, 100));
 		setResizable(false);
 		setLayout(new FlowLayout(FlowLayout.LEADING, PADDING, PADDING));
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
 		JPanel contentPane = new JPanel();
 

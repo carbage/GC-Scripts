@@ -139,7 +139,7 @@ public class Walker extends Node {
 						}
 					} else if (!Areas.WARRIORS_GUILD_SHOTPUT_ROOM.contains(Players.getLocal())) {
 						SceneObject door = SceneEntities.getNearest(SceneObjects.SHOTPUT_DOOR);
-						if (door.getLocation().getX() == 3857) {
+						if (door.getLocation().getX() == 2857) {
 							LocationMethods.walkToObject(door);
 							Camera.turnTo(door);
 							GenericMethods.waitForCondition(door.isOnScreen(), 10000);
@@ -172,11 +172,7 @@ public class Walker extends Node {
 							GcWarriorsGuild.logger.log("Player is upstairs, moving into cyclops room.");
 							door.interact("Open");
 							GenericMethods.waitForCondition(Widgets.get(Dialogues.DIALOGUE_BOX_PARENT).validate(), 5000);
-							Widgets.get(Dialogues.DIALOGUE_BOX_PARENT).getChild(Dialogues.DIALOGUE_BOX_NEXT).click(true);
-							GenericMethods.waitForCondition(Widgets.get(Dialogues.DIALOGUE_BOX_PARENT).validate(), 5000);
-							Widgets.get(Dialogues.DIALOGUE_BOX_PARENT).getChild(Dialogues.DIALOGUE_BOX_NEXT).click(true);
-							GenericMethods.waitForCondition(Widgets.get(Dialogues.DIALOGUE_BOX_PARENT).validate(), 5000);
-							Widgets.get(Dialogues.DIALOGUE_BOX_PARENT).getChild(Dialogues.DIALOGUE_BOX_NEXT).click(true);
+							door.interact("Open");
 							GenericMethods.waitForCondition(Widgets.get(Windows.WARRIORS_GUILD_CYCLOPES_PARENT).validate(), 5000);
 							WidgetChild widget = Widgets.get(Windows.WARRIORS_GUILD_CYCLOPES_PARENT).getChild(Windows.WARRIORS_GUILD_CYCLOPES_SINGLE_TYPE);
 							if (widget.getTextureId() == Windows.WARRIORS_GUILD_CYCLOPES_SINGLE_TYPE_SELECTED_TEXTURE) {

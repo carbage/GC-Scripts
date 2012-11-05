@@ -46,13 +46,13 @@ public class Gui extends JFrame {
 	private DefaultTableModel model;
 	private JTable table;
 
-	private String[] columns = new String[] { "Data", "Value" };
+	private static final String[] COLUMNS = new String[] { "Data", "Value" };
 	private Object[][] tableData;
 
 	private long startTime;
 	public Timer runTime;
 
-	private int PADDING = 10;
+	private final static int PADDING = 10;
 
 	private Logger logger;
 
@@ -62,7 +62,7 @@ public class Gui extends JFrame {
 	public Gui(String scriptName, Logger logger, Object[][] data, ActiveScript parent) {
 
 		this.logger = logger;
-		logger.log("Initialised selection GUI.");
+		logger.log("Initialised stats GUI.");
 
 		this.parent = parent;
 
@@ -75,7 +75,6 @@ public class Gui extends JFrame {
 		setResizable(false);
 		setLayout(new FlowLayout(FlowLayout.LEADING, PADDING, PADDING));
 		addWindowListener(new WindowEventHandler());
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		scriptLabel.setText("Script Name:");
 		scriptLabel.setLabelFor(scriptValueLabel);
@@ -107,7 +106,7 @@ public class Gui extends JFrame {
 		scriptValueLabel.setText(scriptName);
 		scriptValueLabel.setPreferredSize(new Dimension(120, 20));
 
-		model = new DefaultTableModel(data, columns);
+		model = new DefaultTableModel(data, COLUMNS);
 
 		tableData = data;
 		table = new JTable(model) {
@@ -142,7 +141,7 @@ public class Gui extends JFrame {
 	public void updateRows(final Object[][] data) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				model.setDataVector(data, columns);
+				model.setDataVector(data, COLUMNS);
 				model.fireTableDataChanged();
 			}
 		});

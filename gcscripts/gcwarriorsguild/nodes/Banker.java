@@ -51,15 +51,23 @@ public class Banker extends Node {
 								if (Inventory.contains(Equipment.DEFENDER_IDS)) {
 									Bank.depositInventory();
 								}
-								Item food = Bank.getItem(Items.FOOD_IDS);
-								if (food != null) {
-									Bank.search(food.getName());
-									food.getWidgetChild().interact("Withdraw-all");
-									if(Inventory.isFull()) {
-										Bank.close();
-										GcWarriorsGuild.isBanking = false;										
+								Item[] items = Bank.getItems();
+								for (Item i : items) {
+									if (i != null) {
+										for (int f : Items.FOOD_IDS) {
+											if (i.getId() == f) {
+												Bank.search(i.getName());
+												Bank.withdraw(i.getId(), Amount.ALL);
+												if (Inventory.isFull()) {
+													Bank.close();
+													GcWarriorsGuild.isBanking = false;
+												}
+											}
+										}
+
 									}
-								} else {
+								}
+								if (Inventory.getCount() == 0) {
 									GcWarriorsGuild.logger.log("No food in bank, stopping.");
 									GcWarriorsGuild.problemFound = true;
 								}
@@ -71,7 +79,7 @@ public class Banker extends Node {
 									defender.getWidgetChild().click(true);
 									GcWarriorsGuild.hasDefender = true;
 									Bank.close();
-									GcWarriorsGuild.isBanking = false;		
+									GcWarriorsGuild.isBanking = false;
 								} else {
 									GcWarriorsGuild.logger.log("No defenders in bank, stopping.");
 									GcWarriorsGuild.problemFound = true;
