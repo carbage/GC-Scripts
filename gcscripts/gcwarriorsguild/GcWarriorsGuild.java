@@ -1,7 +1,6 @@
 package gcscripts.gcwarriorsguild;
 
 import gcapi.constants.Areas;
-import gcapi.constants.SceneObjects;
 import gcapi.constants.interfaces.Windows;
 import gcapi.gui.Gui;
 import gcapi.methods.CalculationMethods;
@@ -17,7 +16,6 @@ import gcscripts.gcwarriorsguild.nodes.FightCyclopes;
 import gcscripts.gcwarriorsguild.nodes.ThrowShotput;
 import gcscripts.gcwarriorsguild.nodes.Walker;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -41,12 +39,9 @@ import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.Widgets;
 import org.powerbot.game.api.methods.input.Mouse.Speed;
 import org.powerbot.game.api.methods.interactive.Players;
-import org.powerbot.game.api.methods.node.SceneEntities;
 import org.powerbot.game.api.methods.tab.Equipment;
 import org.powerbot.game.api.methods.tab.Inventory;
 import org.powerbot.game.api.util.Random;
-import org.powerbot.game.api.wrappers.Area;
-import org.powerbot.game.api.wrappers.Tile;
 
 @Manifest(authors = { "Fuz" }, name = "GC Warriors' Guild", description = "Gathers tokens with shotput/Gathers defenders", version = 1.0)
 public class GcWarriorsGuild extends ActiveScript implements MessageListener, PaintListener {
@@ -58,13 +53,11 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	private final List<Node> jobsCollection = Collections.synchronizedList(new ArrayList<Node>());
 	private Tree jobContainer = null;
 
-	private SelectorGui frame;
-
 	public static int defendersCollected = 0;
 
 	public static boolean init = false;
 
-	private static SelectorGui selectorGui;
+	private static OptionsGui frame;
 	private static Gui gui;
 
 	public static boolean collectingTokens = true;
@@ -99,7 +92,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 					case TOP:
 						final ReentrantLock lock = new ReentrantLock();
 						final Condition condition = lock.newCondition();
-						frame = new SelectorGui();
+						frame = new OptionsGui();
 						frame.addWindowListener(new WindowAdapter() {
 
 							@Override
@@ -108,7 +101,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 									if (frame.getOptionsBox().getSelectedIndex() == 1) {
 										collectingTokens = false;
 										defenderId = gcapi.constants.Equipment.DEFENDER_IDS[((JComboBox) frame.getDefendersBox()).getSelectedIndex()];
-										GcWarriorsGuild.defenderType = ((SelectorGui) frame).getDefenders()[((JComboBox) ((SelectorGui) frame).getDefendersBox()).getSelectedIndex()];
+										GcWarriorsGuild.defenderType = ((OptionsGui) frame).getDefenders()[((JComboBox) ((OptionsGui) frame).getDefendersBox()).getSelectedIndex()];
 									} else {
 										collectingTokens = true;
 									}
@@ -284,47 +277,30 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	public void onRepaint(Graphics g) {
 		if (Game.isLoggedIn() && Players.getLocal() != null) {
 			if (Players.getLocal() != null) {
-				/*switch (Players.getLocal().getPlane()) {
-					case 0:
-						g.setColor(Color.WHITE);
-						for (Tile t : Areas.WARRIORS_GUILD_GROUND_FLOOR.getTileArray()) {
-							t.draw(g);
-						}
-						g.setColor(Color.GREEN);
-						for (Tile t : Areas.WARRIORS_GUILD_BANK_AREA.getTileArray()) {
-							t.draw(g);
-						}
-						break;
-
-					case 1:
-						g.setColor(Color.WHITE);
-						for (Tile t : Areas.WARRIORS_GUILD_MIDDLE_FLOOR.getTileArray()) {
-							t.draw(g);
-						}
-						g.setColor(Color.BLUE);
-						for (Tile t : Areas.WARRIORS_GUILD_SHOTPUT_ROOM.getTileArray()) {
-							t.draw(g);
-						}
-						g.setColor(Color.YELLOW);
-						Area shotput = SceneEntities.getNearest(SceneObjects.SHOTPUT_PILE_ID).getArea();
-						if (shotput != null) {
-							for (Tile t : shotput.getTileArray()) {
-								t.draw(g);
-							}
-							break;
-						}
-
-					case 2:
-						g.setColor(Color.WHITE);
-						for (Tile t : Areas.WARRIORS_GUILD_TOP_FLOOR.getTileArray()) {
-							t.draw(g);
-						}
-						g.setColor(Color.RED);
-						for (Tile t : Areas.WARRIORS_GUILD_CYCLOPS_AREA.getTileArray()) {
-							t.draw(g);
-						}
-						break;
-				}*/
+				/*
+				 * switch (Players.getLocal().getPlane()) { case 0:
+				 * g.setColor(Color.WHITE); for (Tile t :
+				 * Areas.WARRIORS_GUILD_GROUND_FLOOR.getTileArray()) {
+				 * t.draw(g); } g.setColor(Color.GREEN); for (Tile t :
+				 * Areas.WARRIORS_GUILD_BANK_AREA.getTileArray()) { t.draw(g); }
+				 * break;
+				 * 
+				 * case 1: g.setColor(Color.WHITE); for (Tile t :
+				 * Areas.WARRIORS_GUILD_MIDDLE_FLOOR.getTileArray()) {
+				 * t.draw(g); } g.setColor(Color.BLUE); for (Tile t :
+				 * Areas.WARRIORS_GUILD_SHOTPUT_ROOM.getTileArray()) {
+				 * t.draw(g); } g.setColor(Color.YELLOW); Area shotput =
+				 * SceneEntities
+				 * .getNearest(SceneObjects.SHOTPUT_PILE_ID).getArea(); if
+				 * (shotput != null) { for (Tile t : shotput.getTileArray()) {
+				 * t.draw(g); } break; }
+				 * 
+				 * case 2: g.setColor(Color.WHITE); for (Tile t :
+				 * Areas.WARRIORS_GUILD_TOP_FLOOR.getTileArray()) { t.draw(g); }
+				 * g.setColor(Color.RED); for (Tile t :
+				 * Areas.WARRIORS_GUILD_CYCLOPS_AREA.getTileArray()) {
+				 * t.draw(g); } break; }
+				 */
 			}
 		}
 	}
@@ -333,9 +309,9 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	public void onStop() {
 		logger.log("Script stopped.");
 		logger.close();
+		guiClosed = true;
 		if (selectorGui != null) selectorGui.dispose();
 		if (gui != null) gui.dispose();
-		guiClosed = true;
 	}
 
 	public static Floor getFloor() {

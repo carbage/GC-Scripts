@@ -13,7 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class SelectorGui extends JFrame {
+public class OptionsGui extends JFrame {
 
 	private JComboBox optionsBox;
 
@@ -29,10 +29,10 @@ public class SelectorGui extends JFrame {
 	private static final String[] DEFENDERS = new String[] { "Bronze", "Iron",
 			"Steel", "Black", "Mithril", "Adamant", "Rune", "Dragon" };
 
-	public SelectorGui() {
-		//this.logger = logger;
+	public OptionsGui() {
+		this.logger = logger;
 
-		//this.logger.log("Initialised selection GUI");
+		this.logger.log("Initialised selection GUI");
 
 		setTitle("GC Warriors' Guild - Select action");
 		setPreferredSize(new Dimension(200, 100));
@@ -59,7 +59,7 @@ public class SelectorGui extends JFrame {
 		JButton startButton = new JButton("Start script");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispatchEvent(new WindowEvent(SelectorGui.this, WindowEvent.WINDOW_CLOSING));
+				dispatchEvent(new WindowEvent(OptionsGui.this, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 

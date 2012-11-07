@@ -19,7 +19,7 @@ public class FightCyclopes extends Node {
 
 	@Override
 	public boolean activate() {
-		return Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(Players.getLocal());
+		return Areas.WARRIORS_GUILD_CYCLOPS_AREA.contains(Players.getLocal()) && !Players.getLocal().isInCombat();
 	}
 
 	@Override
