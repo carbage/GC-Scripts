@@ -85,11 +85,9 @@ public class ScriptSkeleton extends ActiveScript implements MessageListener, Pai
 
 	private Object[][] getData() {
 		if (gui != null) { // Checks if GUI has been initialised
-			return new Object[][] { { "Something per hour:",
-					CalculationMethods.perHour((int) 0, gui.runTime) } };
+			return new Object[][] { { "Something per hour:", perHour((int) 0) } };
 		}
-		return new Object[][] { { "Something per hour:",
-				CalculationMethods.perHour((int) 0, gui.runTime) } };
+		return new Object[][] { { "Something per hour:", 0 } };
 	}
 
 	@Override
@@ -105,6 +103,14 @@ public class ScriptSkeleton extends ActiveScript implements MessageListener, Pai
 		}
 	}
 
+	private String perHour(int i) {
+		return CalculationMethods.perHour((int) i, gui.runTime);
+	}
+
+	public static Enum getEnum() {
+		return null;
+	}
+
 	@Override
 	public void onStop() {
 		logger.log("Script stopped.");
@@ -112,7 +118,4 @@ public class ScriptSkeleton extends ActiveScript implements MessageListener, Pai
 		if (gui != null) gui.dispose();
 	}
 
-	public static Enum getEnum() {
-		return null;
-	}
 }

@@ -7,6 +7,7 @@ import gcapi.methods.CalculationMethods;
 import gcapi.methods.LocationMethods;
 import gcapi.utils.Antiban;
 import gcapi.utils.Logger;
+import gcscripts.ScriptSkeleton.Enum;
 import gcscripts.gcwarriorsguild.branches.DefenderFarmer;
 import gcscripts.gcwarriorsguild.branches.TokenFarmer;
 import gcscripts.gcwarriorsguild.nodes.Banker;
@@ -234,28 +235,22 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 			}
 		}
 
-		return Random.nextInt(100, 500);
+		return Random.nextInt(1, 50);
 	}
 
 	private Object[][] getData() {
 		if (collectingTokens) { // Checks if collecting tokens
 			if (gui != null) { // Checks if GUI has been initialised
-				return new Object[][] {
-						{ "Tokens collected:", getTokens() },
-						{
-								"Tokens per hour:",
-								CalculationMethods.perHour(getTokens(), gui.runTime) } };
+				return new Object[][] { { "Tokens collected:", getTokens() },
+						{ "Tokens per hour:", perHour(getTokens()) } };
 			}
 			return new Object[][] { { "Tokens collected:", 0 },
 					{ "Tokens per hour:", 0 } };
 		} else { // Otherwise it's collecting defenders
 			if (gui != null) { // Checks if GUI has been initialised
-				return new Object[][] {
-						{ "Defender type:", defenderType },
+				return new Object[][] { { "Defender type:", defenderType },
 						{ "Defenders collected:", defendersCollected },
-						{
-								"Defenders per hour:",
-								CalculationMethods.perHour((int) defendersCollected, gui.runTime) } };
+						{ "Defenders per hour:", perHour(defendersCollected) } };
 			}
 			return new Object[][] { { "Defender type:", 0 },
 					{ "Defenders collected:", 0 }, { "Defenders per hour:", 0 } };
@@ -305,13 +300,8 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 		}
 	}
 
-	@Override
-	public void onStop() {
-		logger.log("Script stopped.");
-		logger.close();
-		guiClosed = true;
-		if (selectorGui != null) selectorGui.dispose();
-		if (gui != null) gui.dispose();
+	private String perHour(int i) {
+		return CalculationMethods.perHour((int) i, gui.runTime);
 	}
 
 	public static Floor getFloor() {
@@ -325,4 +315,14 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 			return null;
 		}
 	}
+
+	@Override
+	public void onStop() {
+		logger.log("Script stopped.");
+		logger.close();
+		guiClosed = true;
+		if (frame != null) frame.dispose();
+		if (gui != null) gui.dispose();
+	}
+
 }

@@ -2,8 +2,8 @@ package gcscripts.gcwarriorsguild.nodes;
 
 import gcapi.constants.Areas;
 import gcapi.constants.Equipment;
-import gcapi.constants.Items;
 import gcapi.constants.SceneObjects;
+import gcapi.constants.items.Items;
 import gcapi.methods.GenericMethods;
 import gcapi.methods.LocationMethods;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;

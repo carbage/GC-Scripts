@@ -1,4 +1,4 @@
-package gcscripts.gcrevenants;
+package gcscripts;
 
 import gcapi.utils.Logger;
 
@@ -13,18 +13,18 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class OptionsGui extends JFrame {
+public class OptionsGuiSkeleton extends JFrame {
 
 	private static final int PADDING = 10;
 
 	private Logger logger;
 
-	public OptionsGui(Logger logger) {
+	public OptionsGuiSkeleton(Logger logger) {
 		this.logger = logger;
 
 		this.logger.log("Initialised selection GUI");
 
-		setTitle("GC Warriors' Guild - Select action");
+		setTitle("Select action");
 		setPreferredSize(new Dimension(200, 100));
 		setResizable(false);
 		setLayout(new FlowLayout(FlowLayout.LEADING, PADDING, PADDING));
@@ -34,7 +34,7 @@ public class OptionsGui extends JFrame {
 		JButton startButton = new JButton("Start script");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispatchEvent(new WindowEvent(OptionsGui.this, WindowEvent.WINDOW_CLOSING));
+				dispatchEvent(new WindowEvent(OptionsGuiSkeleton.this, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 

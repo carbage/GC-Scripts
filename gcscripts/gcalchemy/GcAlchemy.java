@@ -1,11 +1,12 @@
-package gcscripts.gcrevenants;
+package gcscripts.gcalchemy;
 
+import gcapi.constants.items.Runes;
 import gcapi.gui.Gui;
 import gcapi.methods.CalculationMethods;
+import gcapi.utils.Antiban;
 import gcapi.utils.Logger;
-import gcscripts.gcrevenants.OptionsGui;
+import gcscripts.gcalchemy.nodes.Alchemiser;
 
-import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -17,18 +18,19 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.powerbot.core.bot.Bot;
 import org.powerbot.core.event.events.MessageEvent;
 import org.powerbot.core.event.listeners.MessageListener;
-import org.powerbot.core.event.listeners.PaintListener;
 import org.powerbot.core.script.ActiveScript;
 import org.powerbot.core.script.job.state.Node;
 import org.powerbot.core.script.job.state.Tree;
 import org.powerbot.game.api.Manifest;
 import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.input.Mouse.Speed;
-import org.powerbot.game.api.methods.interactive.Players;
+import org.powerbot.game.api.methods.tab.Inventory;
+import org.powerbot.game.api.methods.tab.Skills;
 import org.powerbot.game.api.util.Random;
+import org.powerbot.game.api.wrappers.node.Item;
 
-@Manifest(authors = { "Fuz" }, name = "GC Revenants", description = "Kills revenants in forinthry dungeon.", version = 1.0)
-public class GcRevenants extends ActiveScript implements MessageListener, PaintListener {
+@Manifest(authors = { "Fuz" }, name = "GC Alchemy", description = "Uses low/high alchemy on your chosen item.", version = 1.0)
+public class GcAlchemy extends ActiveScript implements MessageListener {
 
 	public static Logger logger;
 
@@ -40,26 +42,44 @@ public class GcRevenants extends ActiveScript implements MessageListener, PaintL
 	public static boolean init = false;
 
 	private OptionsGui frame;
-
 	private static Gui gui;
 
-	public static enum Enum {
-	}
+	private int magicExp;
+
+	private int casts = 0;
+
+	public static Item itemToAlch;
+
+	public static boolean highAlch = false;
 
 	@Override
 	public void onStart() {// Initialises the logger
 		logger = new Logger(this);
 		logger.log("Started script.");
+		if (Inventory.getCount() == 0 || !Inventory.contains(Runes.NATURE)) {
+			logger.log("Inventory empty, stopping.");
+			problemFound = true;
+			return;
+		}
 		Bot.setSpeed(Speed.VERY_FAST);
+		magicExp = Skills.getExperience(Skills.MAGIC);
 		final ReentrantLock lock = new ReentrantLock();
 		final Condition condition = lock.newCondition();
-		frame = new OptionsGui(logger);
+		frame = new OptionsGui(Inventory.getAllItems(true), logger);
 		frame.addWindowListener(new WindowAdapter() {
 
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				synchronized (lock) {
+					for (Item i : Inventory.getItems()) {
+						if (i.getName() == frame.itemList.getSelectedItem().toString()) {
+							itemToAlch = i;
+						}
 
+					}
+					if (frame.highAlch.isSelected()) {
+						GcAlchemy.this.highAlch = true;
+					}
 					frame.setVisible(false);
 					lock.notify();
 				}
@@ -85,7 +105,8 @@ public class GcRevenants extends ActiveScript implements MessageListener, PaintL
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		gui = new Gui("GC Revenants", logger, getData(), this);
+		gui = new Gui("GC Alchemy", logger, getData(), this);
+		provide(new Alchemiser(), new Antiban());
 		init = true;
 	}
 
@@ -117,31 +138,38 @@ public class GcRevenants extends ActiveScript implements MessageListener, PaintL
 						job.join();
 					}
 				}
-				if (gui != null) gui.updateRows(getData());
+				if (gui != null && casts > 0) gui.updateRows(getData());
 			}
 		}
 
-		return Random.nextInt(100, 500);
+		return Random.nextInt(1, 50);
 	}
 
 	private Object[][] getData() {
 		if (gui != null) { // Checks if GUI has been initialised
-			return new Object[][] { { "Something per hour:",
-					CalculationMethods.perHour((int) 0, gui.runTime) } };
+			return new Object[][] {
+					{ "Alching:", itemToAlch },
+					{ "Magic exp gained:",
+							Skills.getExperience(Skills.MAGIC) - magicExp },
+					{ "Casts:", casts },
+					{ "Magic exp/hour:", perHour(Skills.MAGIC - magicExp) },
+					{ "Casts/hour:", perHour(casts) } };
 		}
-		return new Object[][] { { "Something per hour:",
-				CalculationMethods.perHour((int) 0, gui.runTime) } };
+		return new Object[][] { { "Something per hour:", 0 } };
+	}
+
+	private String perHour(int i) {
+		return CalculationMethods.perHour((int) i, gui.runTime);
 	}
 
 	@Override
 	public void messageReceived(MessageEvent msg) {
-	}
-
-	@Override
-	public void onRepaint(Graphics g) {
-		if (Game.isLoggedIn() && Players.getLocal() != null) {
-			if (Players.getLocal() != null) {
-
+		if (msg.getId() == 0) {
+			if (msg.getMessage().contains("do not have enough")) {
+				logger.log("Not enough runes to alch, stopping.");
+			}
+			if (msg.getMessage().contains("added to your pouch")) {
+				++casts;
 			}
 		}
 	}
@@ -151,9 +179,5 @@ public class GcRevenants extends ActiveScript implements MessageListener, PaintL
 		logger.log("Script stopped.");
 		logger.close();
 		if (gui != null) gui.dispose();
-	}
-
-	public static Enum getEnum() {
-		return null;
 	}
 }

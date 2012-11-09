@@ -1,4 +1,4 @@
-package gcapi.constants;
+package gcapi.constants.items;
 
 public final class Items {
 

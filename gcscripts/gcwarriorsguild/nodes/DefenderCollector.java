@@ -1,7 +1,7 @@
 package gcscripts.gcwarriorsguild.nodes;
 
 import gcapi.constants.Equipment;
-import gcapi.constants.Items;
+import gcapi.constants.items.Items;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
 import org.powerbot.core.script.job.state.Node;
