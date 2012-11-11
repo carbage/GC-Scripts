@@ -19,6 +19,8 @@ public class OptionsGui extends JFrame {
 
 	private JComboBox defendersBox;
 
+	private JComboBox foodBox;
+
 	private static final int PADDING = 10;
 
 	private Logger logger;
@@ -28,6 +30,9 @@ public class OptionsGui extends JFrame {
 
 	private static final String[] DEFENDERS = new String[] { "Bronze", "Iron",
 			"Steel", "Black", "Mithril", "Adamant", "Rune", "Dragon" };
+
+	private static final String[] FOOD = new String[] { "Lobster", "Shark",
+			"Manta ray", "Monkfish", "Rocktail" };
 
 	public OptionsGui() {
 		this.logger = logger;
@@ -43,6 +48,7 @@ public class OptionsGui extends JFrame {
 
 		optionsBox = new JComboBox(getOptions());
 		defendersBox = new JComboBox(getDefenders());
+		foodBox = new JComboBox(getFood());
 
 		optionsBox.setSelectedIndex(0);
 		optionsBox.addActionListener(new ActionListener() {
@@ -69,6 +75,7 @@ public class OptionsGui extends JFrame {
 
 		contentPane.add(optionsBox);
 		contentPane.add(defendersBox);
+		contentPane.add(foodBox);
 		contentPane.add(startButton);
 		pack();
 		setVisible(true);
@@ -82,6 +89,10 @@ public class OptionsGui extends JFrame {
 	public JComboBox getDefendersBox() {
 		return defendersBox;
 	}
+	
+	public JComboBox getFoodBox() {
+		return foodBox;
+	}
 
 	public String[] getOptions() {
 		return OPTIONS;
@@ -89,5 +100,9 @@ public class OptionsGui extends JFrame {
 
 	public String[] getDefenders() {
 		return DEFENDERS;
+	}
+
+	public String[] getFood() {
+		return FOOD;
 	}
 }

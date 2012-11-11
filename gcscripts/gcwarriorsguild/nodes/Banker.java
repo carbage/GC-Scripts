@@ -50,17 +50,14 @@ public class Banker extends Node {
 								if (Inventory.contains(Equipment.DEFENDER_IDS)) {
 									Bank.depositInventory();
 								}
-								Item[] items = Bank.getItems();
-								for (Item i : items) {
+								for (Item i : Bank.getItems()) {
 									if (i != null) {
-										for (int f : Food.FOOD_IDS) {
-											if (i.getId() == f) {
-												Bank.search(i.getName());
-												Bank.withdraw(i.getId(), Amount.ALL);
-												if (Inventory.isFull()) {
-													Bank.close();
-													GcWarriorsGuild.isBanking = false;
-												}
+										if (i.getName() == GcWarriorsGuild.foodName) {
+											Bank.search(i.getName());
+											Bank.withdraw(i.getId(), Amount.ALL);
+											if (Inventory.isFull()) {
+												Bank.close();
+												GcWarriorsGuild.isBanking = false;
 											}
 										}
 

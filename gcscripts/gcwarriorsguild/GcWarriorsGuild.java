@@ -57,6 +57,8 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 
 	public static boolean init = false;
 
+	public static int foodId = 0;
+
 	private static OptionsGui frame;
 	private static Gui gui;
 
@@ -103,6 +105,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 										collectingTokens = false;
 										defenderId = gcapi.constants.Equipment.DEFENDER_IDS[((JComboBox) frame.getDefendersBox()).getSelectedIndex()];
 										GcWarriorsGuild.defenderType = ((OptionsGui) frame).getDefenders()[((JComboBox) ((OptionsGui) frame).getDefendersBox()).getSelectedIndex()];
+										GcWarriorsGuild.foodName = (String) frame.getFoodBox().getSelectedItem();
 									} else {
 										collectingTokens = true;
 									}
@@ -237,15 +240,19 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	private Object[][] getData() {
 		if (collectingTokens) { // Checks if collecting tokens
 			if (gui != null) { // Checks if GUI has been initialised
-				return new Object[][] { { "Tokens collected:", CalculationMethods.format(getTokens()) },
+				return new Object[][] {
+						{ "Tokens collected:",
+								CalculationMethods.format(getTokens()) },
 						{ "Tokens per hour:", perHour(getTokens()) } };
 			}
 			return new Object[][] { { "Tokens collected:", 0 },
 					{ "Tokens per hour:", 0 } };
 		} else { // Otherwise it's collecting defenders
 			if (gui != null) { // Checks if GUI has been initialised
-				return new Object[][] { { "Defender type:", defenderType },
-						{ "Defenders collected:", CalculationMethods.format(defendersCollected) },
+				return new Object[][] {
+						{ "Defender type:", defenderType },
+						{ "Defenders collected:",
+								CalculationMethods.format(defendersCollected) },
 						{ "Defenders per hour:", perHour(defendersCollected) } };
 			}
 			return new Object[][] { { "Defender type:", 0 },
