@@ -7,7 +7,6 @@ import gcapi.methods.CalculationMethods;
 import gcapi.methods.LocationMethods;
 import gcapi.utils.Antiban;
 import gcapi.utils.Logger;
-import gcscripts.ScriptSkeleton.Enum;
 import gcscripts.gcwarriorsguild.branches.DefenderFarmer;
 import gcscripts.gcwarriorsguild.branches.TokenFarmer;
 import gcscripts.gcwarriorsguild.nodes.Banker;
@@ -64,7 +63,6 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	public static boolean collectingTokens = true;
 	public static int defenderId;
 	public static String defenderType;
-	public static boolean guiClosed = false;
 
 	public static int initialTokens;
 	public static int tokensGained;
@@ -72,6 +70,8 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	public static boolean isBanking = false;
 
 	public static boolean hasDefender = true;
+
+	public static String foodName = "";
 
 	public static enum Floor {
 		GROUND, MIDDLE, TOP;
@@ -194,10 +194,6 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 		return 0;
 	}
 
-	private boolean getGuiClosed() {
-		return guiClosed;
-	}
-
 	public synchronized final void provide(final Node... jobs) {
 		for (final Node job : jobs) {
 			if (!jobsCollection.contains(job)) {
@@ -241,7 +237,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	private Object[][] getData() {
 		if (collectingTokens) { // Checks if collecting tokens
 			if (gui != null) { // Checks if GUI has been initialised
-				return new Object[][] { { "Tokens collected:", getTokens() },
+				return new Object[][] { { "Tokens collected:", CalculationMethods.format(getTokens()) },
 						{ "Tokens per hour:", perHour(getTokens()) } };
 			}
 			return new Object[][] { { "Tokens collected:", 0 },
@@ -249,7 +245,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 		} else { // Otherwise it's collecting defenders
 			if (gui != null) { // Checks if GUI has been initialised
 				return new Object[][] { { "Defender type:", defenderType },
-						{ "Defenders collected:", defendersCollected },
+						{ "Defenders collected:", CalculationMethods.format(defendersCollected) },
 						{ "Defenders per hour:", perHour(defendersCollected) } };
 			}
 			return new Object[][] { { "Defender type:", 0 },
@@ -320,7 +316,6 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 	public void onStop() {
 		logger.log("Script stopped.");
 		logger.close();
-		guiClosed = true;
 		if (frame != null) frame.dispose();
 		if (gui != null) gui.dispose();
 	}

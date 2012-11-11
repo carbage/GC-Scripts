@@ -1,12 +1,16 @@
-package gcscripts.gcalchemy;
+package gcscripts.gcsuperheater;
 
+import gcapi.constants.items.Bars;
 import gcapi.constants.items.Runes;
+import gcapi.constants.recipes.Smithing;
 import gcapi.gui.Gui;
 import gcapi.methods.CalculationMethods;
+import gcapi.methods.GenericMethods;
 import gcapi.utils.Antiban;
 import gcapi.utils.Logger;
 import gcapi.utils.PriceChecker;
-import gcscripts.gcalchemy.nodes.Alchemiser;
+import gcscripts.gcsuperheater.nodes.Banker;
+import gcscripts.gcsuperheater.nodes.Superheater;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -26,13 +30,14 @@ import org.powerbot.core.script.job.state.Tree;
 import org.powerbot.game.api.Manifest;
 import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.input.Mouse.Speed;
+import org.powerbot.game.api.methods.interactive.Players;
 import org.powerbot.game.api.methods.tab.Inventory;
 import org.powerbot.game.api.methods.tab.Skills;
 import org.powerbot.game.api.util.Random;
 import org.powerbot.game.api.wrappers.node.Item;
 
-@Manifest(authors = { "Fuz" }, name = "GC Alchemy", description = "Uses low/high alchemy on your chosen item.", version = 1.0)
-public class GcAlchemy extends ActiveScript implements MessageListener {
+@Manifest(authors = { "Fuz" }, name = "GC Superheater", description = "Superheats ore into bars.", version = 1.0)
+public class GcSuperheater extends ActiveScript implements MessageListener {
 
 	public static Logger logger;
 
@@ -47,12 +52,18 @@ public class GcAlchemy extends ActiveScript implements MessageListener {
 	public static Gui gui;
 
 	private static int magicExp;
+	private static int smithingExp;
 
 	public static int casts = 0;
 
-	public static Item itemToAlch;
+	private static String barToMake;
 
-	public static boolean highAlch = false;
+	protected static int[][] barRecipe;
+	protected static int barId;
+	public static int[] primaryOre;
+	public static int[] secondaryOre;
+
+	public static boolean isBanking = false;
 
 	@Override
 	public void onStart() {// Initialises the logger
@@ -65,23 +76,66 @@ public class GcAlchemy extends ActiveScript implements MessageListener {
 		}
 		Bot.setSpeed(Speed.VERY_FAST);
 		magicExp = Skills.getExperience(Skills.MAGIC);
+		smithingExp = Skills.getExperience(Skills.SMITHING);
 		final ReentrantLock lock = new ReentrantLock();
 		final Condition condition = lock.newCondition();
 		frame = new OptionsGui(Inventory.getAllItems(true), logger);
 		frame.addWindowListener(new WindowAdapter() {
+			private Object barToHeat;
 
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				synchronized (lock) {
-					for (Item i : Inventory.getItems()) {
-						logger.log("Selected item: " + frame.itemList.getSelectedItem());
-						if (i.getName().equals(frame.itemList.getSelectedItem())) {
-							itemToAlch = i;
-						}
-
-					}
-					if (frame.highAlch.isSelected()) {
-						GcAlchemy.this.highAlch = true;
+					GcSuperheater.barToMake = (String) frame.barList.getSelectedItem();
+					switch (barToMake) {
+						case "Bronze":
+							GcSuperheater.barRecipe = Smithing.BRONZE;
+							GcSuperheater.barId = Bars.BRONZE;
+							GcSuperheater.primaryOre = Smithing.BRONZE[0];
+							GcSuperheater.secondaryOre = Smithing.BRONZE[1];
+							break;
+						case "Iron":
+							GcSuperheater.barRecipe = Smithing.IRON;
+							GcSuperheater.barId = Bars.IRON;
+							GcSuperheater.primaryOre = Smithing.IRON[0];
+							GcSuperheater.secondaryOre = null;
+							break;
+						case "Silver":
+							GcSuperheater.barRecipe = Smithing.SILVER;
+							GcSuperheater.barId = Bars.SILVER;
+							GcSuperheater.primaryOre = Smithing.SILVER[0];
+							GcSuperheater.secondaryOre = null;
+							break;
+						case "Steel":
+							GcSuperheater.barRecipe = Smithing.STEEL;
+							GcSuperheater.barId = Bars.STEEL;
+							GcSuperheater.primaryOre = Smithing.STEEL[0];
+							GcSuperheater.secondaryOre = Smithing.STEEL[1];
+							break;
+						case "Gold":
+							GcSuperheater.barRecipe = Smithing.GOLD;
+							GcSuperheater.barId = Bars.GOLD;
+							GcSuperheater.primaryOre = Smithing.GOLD[0];
+							GcSuperheater.secondaryOre = null;
+							break;
+						case "Mithril":
+							GcSuperheater.barRecipe = Smithing.MITHRIL;
+							GcSuperheater.barId = Bars.MITHRIL;
+							GcSuperheater.primaryOre = Smithing.MITHRIL[0];
+							GcSuperheater.secondaryOre = Smithing.MITHRIL[1];
+							break;
+						case "Adamant":
+							GcSuperheater.barRecipe = Smithing.ADAMANT;
+							GcSuperheater.barId = Bars.ADAMANT;
+							GcSuperheater.primaryOre = Smithing.ADAMANT[0];
+							GcSuperheater.secondaryOre = Smithing.ADAMANT[1];
+							break;
+						case "Runite":
+							GcSuperheater.barRecipe = Smithing.RUNITE;
+							GcSuperheater.barId = Bars.RUNITE;
+							GcSuperheater.primaryOre = Smithing.RUNITE[0];
+							GcSuperheater.secondaryOre = Smithing.RUNITE[1];
+							break;
 					}
 					frame.setVisible(false);
 					lock.notify();
@@ -108,8 +162,8 @@ public class GcAlchemy extends ActiveScript implements MessageListener {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		gui = new Gui("GC Alchemy", logger, getData(), this);
-		provide(new Alchemiser(), new Antiban());
+		gui = new Gui("GC Superheater", logger, getData(), this);
+		provide(new Superheater(), new Banker(), new Antiban());
 		init = true;
 	}
 
@@ -150,34 +204,47 @@ public class GcAlchemy extends ActiveScript implements MessageListener {
 	public static Object[][] getData() {
 		if (gui != null) { // Checks if GUI has been initialised
 			return new Object[][] {
-					{ "Alching:", itemToAlch.getName() },
+					{ "Making:", barToMake },
+					{ "Profit/bar:",
+							CalculationMethods.format(getProfitPerBar()) },
 					{ "Magic exp gained:",
 							CalculationMethods.format(getMagicExpGained()) },
-					{ "Casts:", CalculationMethods.format(casts) },
-					{ "Profit:", CalculationMethods.format(getProfitPerAlch()) },
+					{ "Smithing exp gained:",
+							CalculationMethods.format(getSmithingExpGained()) },
+					{ "Bars smelted:", CalculationMethods.format(casts) },
+					{ "Profit:", CalculationMethods.format(getTotalProfit()) },
 					{ "Magic exp/hour:", perHour(getMagicExpGained()) },
-					{ "Casts/hour:", perHour(casts) },
+					{ "Smithing exp/hour:", perHour(getSmithingExpGained()) },
+					{ "Bars/hour:", perHour(casts) },
 					{ "Profit/hour:", perHour(getTotalProfit()) } };
 		}
-		return new Object[][] { { "Alching:", 0 }, { "Magic exp gained:", 0 },
-				{ "Casts:", 0 }, { "Profit:", 0 }, { "Magic exp/hour:", 0 },
-				{ "Casts/hour:", 0 } };
+		return new Object[][] { { "Making:", "Nothing" }, { "Making:", 0 },
+				{ "Profit/bar:", 0 }, { "Magic exp gained:", 0 },
+				{ "Smithing exp gained:", 0 }, { "Bars smelted:", 0 },
+				{ "Profit:", 0 }, { "Magic exp/hour:", 0 },
+				{ "Smithing exp/hour:", 0 }, { "Bars/hour:", 0 },
+				{ "Profit/hour:", 0 } };
 	}
-	
+
 	private static int getMagicExpGained() {
 		return Skills.getExperience(Skills.MAGIC) - magicExp;
 	}
 
-	private static String perHour(int i) {
-		return CalculationMethods.perHour((int) i, gui.runTime);
+	private static int getSmithingExpGained() {
+		return Skills.getExperience(Skills.SMITHING) - smithingExp;
 	}
 
 	@SuppressWarnings("deprecation")
-	private static int getProfitPerAlch() {
-		int itemPrice = 0;
+	private static int getProfitPerBar() {
+		int barPrice = 0;
+		int orePrice = 0;
 		int runePrice = 0;
 		try {
-			itemPrice = PriceChecker.getPrice(itemToAlch.getId());
+			barPrice = PriceChecker.getPrice(barId);
+			orePrice = PriceChecker.getPrice(primaryOre[0]);
+			if (secondaryOre != null) {
+				orePrice += PriceChecker.getPrice(secondaryOre[0]) * secondaryOre[1];
+			}
 			runePrice = PriceChecker.getPrice(Runes.NATURE);
 			if (Inventory.contains(Runes.FIRE)) {
 				runePrice += PriceChecker.getPrice(Runes.FIRE) * 4;
@@ -185,21 +252,22 @@ public class GcAlchemy extends ActiveScript implements MessageListener {
 		} catch (IOException e) {
 			logger.log(e.getMessage());
 		}
-		return itemPrice - runePrice;
+		return barPrice - orePrice - runePrice;
 	}
-	
+
 	private static int getTotalProfit() {
-		return getProfitPerAlch() * casts;
+		return casts * getProfitPerBar();
+	}
+
+	private static String perHour(int i) {
+		return CalculationMethods.perHour((int) i, gui.runTime);
 	}
 
 	@Override
 	public void messageReceived(MessageEvent msg) {
-		if (msg.getId() == 0 || msg.getId() == 109) {
+		if (msg.getId() == 0) {
 			if (msg.getMessage().contains("do not have enough")) {
-				logger.log("Not enough runes to alch, stopping.");
-			}
-			if (msg.getMessage().contains("added to your money pouch")) {
-				++casts;
+				logger.log("Not enough runes to superheat, stopping.");
 			}
 		}
 	}

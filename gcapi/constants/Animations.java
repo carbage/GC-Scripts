@@ -1,15 +1,18 @@
 package gcapi.constants;
 
 public final class Animations {
+	
 
-	/*
-	 * Combat animations
-	 */
+	public static final int IDLE = -1;
 
-	// Unarmed
-	public static final int ANIMATION_IDLE = -1;
-	public static final int ANIMATION_PUNCH = 422;
-	public static final int ANIMATION_KICK = 423;
-	public static final int ANIMATION_BLOCK = 424;
+	// Unarmed combat
+	public static final int PUNCH = 422;
+	public static final int KICK = 423;
+	public static final int BLOCK = 424;
+	
+	// Spell animations
+	public static final int LOW_ALCH = 9625;
+	public static final int HIGH_ALCH = 9633;
+	public static final int SUPERHEAT = 725;
 
 }

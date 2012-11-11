@@ -3,7 +3,7 @@ package gcscripts.gcwarriorsguild.nodes;
 import gcapi.constants.Areas;
 import gcapi.constants.Equipment;
 import gcapi.constants.SceneObjects;
-import gcapi.constants.items.Items;
+import gcapi.constants.items.Food;
 import gcapi.methods.GenericMethods;
 import gcapi.methods.LocationMethods;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;
@@ -14,10 +14,9 @@ import org.powerbot.game.api.methods.interactive.Players;
 import org.powerbot.game.api.methods.node.SceneEntities;
 import org.powerbot.game.api.methods.tab.Inventory;
 import org.powerbot.game.api.methods.widget.Bank;
-import org.powerbot.game.api.methods.widget.Camera;
 import org.powerbot.game.api.methods.widget.Bank.Amount;
+import org.powerbot.game.api.methods.widget.Camera;
 import org.powerbot.game.api.wrappers.Area;
-import org.powerbot.game.api.wrappers.Tile;
 import org.powerbot.game.api.wrappers.interactive.Player;
 import org.powerbot.game.api.wrappers.node.Item;
 import org.powerbot.game.api.wrappers.node.SceneObject;
@@ -54,7 +53,7 @@ public class Banker extends Node {
 								Item[] items = Bank.getItems();
 								for (Item i : items) {
 									if (i != null) {
-										for (int f : Items.FOOD_IDS) {
+										for (int f : Food.FOOD_IDS) {
 											if (i.getId() == f) {
 												Bank.search(i.getName());
 												Bank.withdraw(i.getId(), Amount.ALL);

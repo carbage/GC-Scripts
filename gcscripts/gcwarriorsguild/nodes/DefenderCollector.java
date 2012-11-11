@@ -1,7 +1,7 @@
 package gcscripts.gcwarriorsguild.nodes;
 
 import gcapi.constants.Equipment;
-import gcapi.constants.items.Items;
+import gcapi.constants.items.Food;
 import gcscripts.gcwarriorsguild.GcWarriorsGuild;
 
 import org.powerbot.core.script.job.state.Node;
@@ -25,8 +25,8 @@ public class DefenderCollector extends Node {
 		GroundItem defender = GroundItems.getNearest(Equipment.DEFENDER_IDS);
 		if (defender != null) {
 			GcWarriorsGuild.logger.log("Found defender on floor");
-			if (Inventory.contains(Items.FOOD_IDS) && Inventory.isFull()) {
-				Inventory.getItem(Items.FOOD_IDS).getWidgetChild().click(true);
+			if (Inventory.contains(Food.FOOD_IDS) && Inventory.isFull()) {
+				Inventory.getItem(Food.FOOD_IDS).getWidgetChild().click(true);
 				GcWarriorsGuild.logger.log("Inventory full, making space for defender");
 			} else if (Inventory.isFull()) {
 				GcWarriorsGuild.isBanking = true;
