@@ -95,7 +95,7 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 					case TOP:
 						final ReentrantLock lock = new ReentrantLock();
 						final Condition condition = lock.newCondition();
-						frame = new OptionsGui();
+						frame = new OptionsGui(logger);
 						frame.addWindowListener(new WindowAdapter() {
 
 							@Override
@@ -250,13 +250,15 @@ public class GcWarriorsGuild extends ActiveScript implements MessageListener, Pa
 		} else { // Otherwise it's collecting defenders
 			if (gui != null) { // Checks if GUI has been initialised
 				return new Object[][] {
+						{ "Food type:", foodName },
 						{ "Defender type:", defenderType },
 						{ "Defenders collected:",
 								CalculationMethods.format(defendersCollected) },
 						{ "Defenders per hour:", perHour(defendersCollected) } };
 			}
 			return new Object[][] { { "Defender type:", 0 },
-					{ "Defenders collected:", 0 }, { "Defenders per hour:", 0 } };
+					{ "Food type:", foodName }, { "Defenders collected:", 0 },
+					{ "Defenders per hour:", 0 } };
 		}
 	}
 

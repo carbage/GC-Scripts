@@ -34,7 +34,7 @@ public class OptionsGui extends JFrame {
 	private static final String[] FOOD = new String[] { "Lobster", "Shark",
 			"Manta ray", "Monkfish", "Rocktail" };
 
-	public OptionsGui() {
+	public OptionsGui(Logger logger) {
 		this.logger = logger;
 
 		this.logger.log("Initialised selection GUI");

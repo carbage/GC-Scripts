@@ -18,7 +18,7 @@ public class ThrowShotput extends Node {
 
 	@Override
 	public boolean activate() {
-		return Areas.WARRIORS_GUILD_SHOTPUT_ROOM.contains(Players.getLocal());
+		return Areas.WARRIORS_GUILD_SHOTPUT_ROOM.contains(Players.getLocal()) && Players.getLocal().getAnimation() == -1;
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class DefenderCollector extends Node {
 			if (defender.interact("Take", "defender")) {
 				GcWarriorsGuild.defendersCollected++;
 				GcWarriorsGuild.logger.log("Defender collected");
-				Time.sleep(1000);
+				Time.sleep(10000);
 			}
 		}
 	}
